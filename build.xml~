@@ -10,7 +10,7 @@
 		<copy overwrite="true" verbose="true" todir="${dest}" includeemptydirs="false">
 			<fileset dir=".">
 				<exclude name=".svn"/>
-				<exclude name=".git/**"/>
+				<exclude name=".git"/>
 				<exclude name="*.pyc"/>
 			</fileset>
 		</copy>

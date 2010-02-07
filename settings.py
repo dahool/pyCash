@@ -85,27 +85,6 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH,'pages'),
 )
 
-if isProd:
-    MEDIA_URL = 'http://py.banshee.sgt/media/'    
-    GOOGLE_USER = "cash.tax.service@gmail.com"
-    GOOGLE_PASS = "0vd11taxservice" 
-    
-    LOG_FILE = '/tmp/pycash-debug.log'
-else:
-    if os.name == "posix":
-        pass
-    else:
-        os.environ['https_proxy']
-        os.environ['http_proxy']
-        #os.environ['proxy_username']
-        #os.environ['proxy_password'] 
-
-    LOG_FILE = '/tmp/pycash-debug-dev.log'
-    MEDIA_ROOT = os.path.join(PROJECT_PATH,'pages','media')
-    MEDIA_URL = 'http://localhost:8000/cash/media/'
-    GOOGLE_USER = "verbum-noreply@os-translation.com.ar"
-    GOOGLE_PASS = "coyote16"
-
 EXT_LOCATION = 'js/ext/' + EXT_VERSION + '/'
 UX_LOCATION = EXT_LOCATION + 'ux/'
 
@@ -131,3 +110,23 @@ INSTALLED_APPS = (
     'pyCash.cash',
     #'django_evolution',
 )
+
+if isProd:
+    MEDIA_URL = 'http://py.banshee.sgt/media/'    
+    LOG_FILE = '/tmp/pycash-debug.log'
+else:
+    if os.name == "posix":
+        pass
+    else:
+        os.environ['https_proxy']
+        os.environ['http_proxy']
+
+    LOG_FILE = '/tmp/pycash-debug-dev.log'
+    MEDIA_ROOT = os.path.join(PROJECT_PATH,'pages','media')
+    MEDIA_URL = 'http://localhost:8000/cash/media/'
+    
+try:
+    execfile(os.path.join(PROJECT_PATH,'settings_local.py'))
+except IOError:
+    GOOGLE_USER = "-"
+    GOOGLE_PASS = "-" 
