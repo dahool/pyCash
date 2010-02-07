@@ -1,0 +1,42 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		{% loadExtUx "Ext.ux.MonthPicker" %}
+		{% loadScript "js/jquery/jquery.flot.pack.js" %}
+		{% loadScript "js/jquery/jquery.domec.min.js" %}       
+		{% loadUxStyle "GroupSummary.css" %}
+		{% loadExtUx "GroupSummary" %}
+		{% loadExtUx "JsonGroupStore" %}
+		{% loadScript "js/app/income.js" %}
+		<script type="text/javascript">
+
+			var incomeLeftPanel = new Local.IncomeLeftPanel();
+			incomeLeftPanel.init();
+			
+			var incomeModule = new Local.Income({
+				listeners: {
+					'reload': function() {
+						incomeLeftPanel.update();
+					}
+				}
+			});
+			incomeModule.init();
+
+			var incomePanel = new Ext.Panel({
+			    	id: 'income-panel',
+					title: _('Incomes'),
+					iconCls : 'menu-income',
+					layout:'border',
+					items: [incomeLeftPanel.form, incomeModule.grid]
+			});
+			
+			mainTabPanel.addActive(incomePanel);
+			incomePanel.doLayout();
+			incomeModule.load();
+
+		</script>
+    </head>
+    <body>
+    </body>
+</html>

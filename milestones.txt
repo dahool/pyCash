@@ -1,0 +1,38 @@
+0.1
+	Funcionalidad principal implementada (Categorias, Impuestos, Gastos)
+		GUI
+			(ok) Agregar iconos en la validaciones
+			(ok) Ver si se puede mostrar el menú desplegable en toda la grilla y agregar el boton "New" al menu.
+			(ok) un tab propio para cada elemento?			
+0.2 
+	(ok) Juntar Categorías y SubCategorías en una misma pantalla (sólo a nivel visual).
+	(ok)	 Interactuar entre ambos.
+	(ok) Filtros simples a Taxes por subCat y payType
+0.3
+	(ok) Totalizadores
+0.4
+	(ok) Gráficas
+	(ok) Hacer más linda la lista de upcoming.
+0.5
+	(ok) Income
+	(ok) Prestamos
+0.6
+	-Quartz de aviso de vencimientos
+	-estando en python habrá que poner un cron (investigar pyDaemon)
+	(ok) googleapi
+0.7
+	Tarjetas
+1.0
+	Todas las funcionalidades implementadas.
+	Teclas de acceso rápido:
+		ctrl+n = new
+		ctrl+s = save
+		ctrl+e = expenses menu
+		ctrl+r = refresh
+		av pag = next page
+		re pag = prev page
+		ctrl+g = group/ungroup
+		alt+c = close tab
+1.0.1
+	Cambio de themes
+	Habilitar Internacionalización

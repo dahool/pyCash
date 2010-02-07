@@ -1,0 +1,96 @@
+.button {
+	padding-left: 28px;
+}
+.icon-delete {
+    background-image: url(../images/skin/database_delete.png) !important;
+}
+.icon-edit {
+    background-image: url(../images/skin/database_edit.png) !important;
+}
+.icon-save {
+    background-image: url(../images/skin/database_save.png) !important;
+}
+.icon-cancel {
+    background-image: url(../images/icons/cancel.png) !important;
+}
+.icon-create {
+    background: transparent url(../images/skin/database_add.png) 0px 50% no-repeat;
+    padding: 5px 10px 5px 10px;
+}
+.icon-gear {
+    background: transparent url(../images/skin/database_gear.png) 0px 50% no-repeat;
+    padding: 5px 10px 5px 10px;
+}
+.iconButton {
+	padding-left: 22px;
+}
+.menuButton a.upcoming {
+    background: url(../images/skin/date_error.png) center left no-repeat;
+    color: #333;
+    padding-left: 25px;
+}
+.icon-pay {
+    background-image: url(../images/skin/tick.png) !important;
+}
+.icon-select {
+	background-image:url(../images/icons/bullet_go.png) !important;
+}
+.icon-find {
+	background-image:url(../images/icons/find.png) !important;
+}
+.icon-apply {
+	background-image:url(../images/icons/accept.png) !important;
+}
+.icon-clear {
+	background-image:url(../images/icons/cross.png) !important;
+}
+.icon-add {
+	background-image:url(../images/icons/application_form_add.png) !important;
+}
+.icon-add-payment {
+    background-image: url(../images/icons/money_add.png) !important;
+}
+.icon-add-plus {
+	background-image:url(../images/icons/add.png) !important;
+}
+.icon-zoom {
+	background-image:url(../images/icons/zoom.png) !important;
+}
+.menu-system {
+	background-image:url(../images/icons/cog.png) !important;
+}
+.menu-item {
+	background-image:url(../images/icons/database_gear.png) !important;
+}
+.menu-expense {
+	background-image:url(../images/icons/book_open.png) !important;
+}
+.menu-debits {
+	background-image:url(../images/icons/time.png) !important;
+}
+.menu-upcoming {
+    background-image: url(../images/skin/date_error.png) !important;
+}
+.menu-income {
+    background-image: url(../images/icons/money_add.png) !important;
+}
+.menu-loan {
+    background-image: url(../images/icons/money_delete.png) !important;
+}
+.menu-stats {
+    background-image: url(../images/icons/chart_curve.png) !important;
+}
+.menu-cards {
+    background-image: url(../images/icons/creditcards.png) !important;
+}
+.menu-tax,
+.menu-tax-list
+{
+	background-image:url(../images/icons/table.png) !important;
+}
+.refresh {
+	background-image:url(../images/icons/arrow_refresh_small.png) !important;
+}
+.login {
+	background-image:url(../images/icons/key_go.png) !important;
+}

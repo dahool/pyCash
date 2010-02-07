@@ -1,0 +1,19 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        {% loadScript "js/app/tax.js" %}
+	    <script type="text/javascript">
+				
+				var taxModule = new Local.Tax();
+				taxModule.init();
+				taxModule.load(mainTabPanel);
+			    
+			    loadStore(subCategoryStore);
+			    loadStore(paymentTypeStore);
+						    
+	    </script>
+	</head>
+    <body>
+    </body>
+</html>

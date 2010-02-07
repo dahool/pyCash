@@ -1,0 +1,17 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        {% loadScript "js/app/upcoming.js" %}
+	    <script type="text/javascript">
+    	
+			var upComing = new Local.TaxUpcoming();
+			upComing.init();
+			upComing.load(mainTabPanel);
+			    
+	    </script>
+	</head>
+    <body>
+		<div id="grid-container" class="ext-container"></div>
+    </body>
+</html>

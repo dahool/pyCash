@@ -1,0 +1,502 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		{% loadUxStyle "GroupSummary.css" %}
+		{% loadExtUx "GroupSummary" %}
+		{% loadExtUx "JsonGroupStore" %}
+		{% loadExtUx "JsonGroupStore" %}
+		{% loadScript "js/storepatches.js" %}        
+		<script type="text/javascript">
+
+    		Local.Expense = function(config) {
+				Ext.apply(this, config);
+   				Local.Expense.superclass.constructor.call(this);
+			};
+			
+			Ext.extend(Local.Expense, Ext.util.Observable, {
+				reload: function(params) {
+					this.ds.reload(params);
+				},
+				remove: function() {
+					var parent = this;
+					var record = parent.grid.selModel.getSelected().data;
+					Ext.Msg.confirm(
+						_('Sure?'),
+						String.format(_('Do you really want do delete {0} of {1}?'),record.text,Ext.util.Format.date(record.date,'d/m/Y')),
+						function(response) {
+							if('yes' == response) {
+								var rid = record.id;
+								$.postJSON('expense/delete'
+									,{ id: rid }
+									,function(response){
+										if (response.success) {
+											parent.reload();
+										} else {
+											Ext.Msg.error(response.msg);
+										}
+									},
+									String.format(_('Deleting {0}...'),record.text)
+								);											
+							}
+						}
+					);
+				},
+				
+	    		edit: function() {
+	    			var parent = this;
+	    			var record = parent.grid.selModel.getSelected().data;
+	    			subCategoryStore.clearFilter();
+	    			var items = [
+						    {
+								xtype : "textfield",
+								cls : "x-hide-display",
+								hideLabel: true,
+					    		name : "id",
+								value: record.id,
+						  	},    
+						    {
+						    	xtype : "datefield",
+						    	fieldLabel: _('Date'),
+						    	name : "date",
+						    	id: "date",
+						    	value: record.date,
+						  	},
+						    {
+						    	xtype : "numberfield",
+						    	fieldLabel: _('Amount'),
+						    	name : "amount",
+						    	value: record.amount,
+						  	},						
+						    {
+						    	xtype : "textfield",
+						    	fieldLabel: _('Text'),
+						    	name : "text",
+						    	value: record.text,
+						    	allowBlank: true
+						  	},						  	
+						    {
+						    	xtype : "combo",
+						    	fieldLabel: _('Payment Type'),
+						    	hiddenName : "paymentType.id",
+						    	store: paymentTypeStore,
+								displayField:'name',
+								valueField:'id',
+						    	triggerAction:'all',
+						    	mode:'local',
+						    	forceSelection:true,
+						    	value: record.paymentTypeId,
+						  	},				        	
+						    {
+						    	xtype : "subCategoryCombo",
+						    	fieldLabel: _('Sub Category'),
+						    	store: subCategoryStore,
+						    	value: record.subCategoryId,
+						    	submit: true,
+						  	}]
+	    		
+					var ed = new EditWindow({
+						id: 'expenseEd',
+						url: 'expense/update',
+						title: _('Editing...'),
+			            height: 200,
+			            iconCls: 'icon-edit',	
+			            focus: 'date',
+			            items: items,
+			            labelWidth: 130,
+			            listeners: {
+			            	'success': function() {
+			            		parent.reload();
+			            	}
+			            }				            								
+					});
+					ed.show();
+	    		},
+	    		
+	    		add: function(){
+	    			var parent = this;
+	    			var dirty = false;
+	    			var items = [
+						    {
+						    	xtype : "datefield",
+						    	fieldLabel: _('Date'),
+						    	name : "date",
+						    	id: "date",
+						  	},
+						    {
+						    	xtype : "numberfield",
+						    	fieldLabel: _('Amount'),
+						    	name : "amount",
+						    	id: "amount",
+						  	},						
+						    {
+						    	xtype : "textfield",
+						    	fieldLabel: _('Text'),
+						    	name : "text",
+						    	allowBlank: true
+						  	},						  	
+						    {
+						    	xtype : "combo",
+						    	fieldLabel: _('Payment Type'),
+						    	hiddenName : "paymentType.id",
+						    	store: paymentTypeStore,
+								displayField:'name',
+								valueField:'id',
+						    	triggerAction:'all',
+						    	mode:'local',
+						    	forceSelection:true,
+						  	},				        	
+						    {
+						    	xtype : "subCategoryCombo",
+						    	fieldLabel: _('Sub Category'),
+						    	store: subCategoryStore,
+						    	submit: true,
+						  	}]
+	    		
+					var ed = new EditWindow({
+						id: 'expenseAdd',
+						url: 'expense/save',
+						title: _('New Expense'),
+			            height: 200,
+			            iconCls: 'icon-add',	
+			            focus: 'date',
+			            items: items,
+			            labelWidth: 130,
+			            closeOnSubmit: false,
+			            listeners: {
+			            	'success': function() {
+			            		dirty=true;
+			            		this.setFocus("amount");
+			            	},
+			            	'close': function() {
+			            		if (dirty) parent.reload();
+			            	}
+			            }				            								
+					});
+					ed.show();
+	    		},
+    		
+    			init: function() {
+    				var parent = this;
+
+				    this.ds = new Ext.ux.data.JsonGroupingStore({
+			        	url: 'expense/list',
+			            fields: [
+				           	{name: 'id'}
+		           			,{name: 'amount'}
+		           			,{name: 'date'}
+		           			,{name: 'text'}
+		           			,{name: 'paymentType', mapping: 'paymentType_name'}
+		           			,{name: 'subCategory', mapping: 'subCategory_name'}
+		           			,{name: 'paymentTypeId'}
+		           			,{name: 'subCategoryId', sortField: 'subCategory'}
+			            ],
+			            totalProperty:'total',
+			            root:'rows',
+			            id:'id',
+			            groupField: 'date',
+						sortInfo: {field: 'date', direction: 'DESC'},
+						remoteSort: true,
+						remoteGroup: false, 
+					});					
+
+				    this.pagingBar = new Ext.PagingToolbar({
+				        pageSize: 50,
+				        store: this.ds,
+				        displayInfo: true,
+						items:['-',
+								{
+								xtype: 'combo',
+								editable: false,
+								triggerAction: 'all',
+							   	store: getPageSizeList(),
+							   	width: 50,
+							   	value: 50,
+							   	listeners: {
+							   			select:
+							   				function(combo,record,index) {
+							   					parent.pagingBar.pageSize = combo.lastSelectionText;
+							   					parent.ds.reload({params:{start:0, limit: parent.pagingBar.pageSize}});
+							   				}
+							   		}
+				                }
+							]
+				    });
+		    		
+				 	this.actionsColumn = new Ext.ux.grid.RowActions({
+						actions:[{
+								iconCls:'icon-edit',
+								tooltip: _('Edit'),
+							},{
+							iconCls:'icon-delete',
+							tooltip: _('Delete'),		
+						}],
+						callbacks: {
+							'icon-edit': function(grid, record, action, rowIndex, colIndex) {
+										parent.edit();
+									},
+							'icon-delete': function(grid, record, action, rowIndex, colIndex) {
+										parent.remove();
+									},
+						}
+					});	 
+						
+				    this.grid = new Ext.grid.GridPanel({
+				    	id: 'expense-grid',
+				    	region:'center',
+						store: this.ds,
+						title: _('Expenses'),
+				        columns: [
+				        	this.actionsColumn,
+				        	{header: _('Date'), width: 30, sortable: true,renderer: Ext.util.Format.dateRenderer('d/m/Y'),dataIndex: 'date',align: 'right'
+				        	},{header: _('Text'), sortable: true, dataIndex: 'text'
+				        	},{header: _('Amount'), width: 30, sortable: true, dataIndex: 'amount',renderer: Ext.util.Format.usMoney, align: 'right',summaryType:'sum'
+				        	},{header: _('Payment Type'), width: 50, sortable: true, dataIndex: 'paymentType'
+				        	},{header: _('Category'), width: 50, sortable: true, dataIndex: 'subCategoryId', renderer: categoryRender
+				        	}
+//				        	},{header: _('Sub Category'), width: 50, sortable: true, dataIndex: 'subCategory'
+//				        	}
+				        ],
+				        view: new Ext.grid.GroupingView({
+				            forceFit: true,
+				            groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "'+_('Items')+'" : "'+_('Item')+'"]})'
+				        }),
+				        bbar: this.pagingBar,
+				        tbar: new Ext.Toolbar({
+							items:[{
+									text: _('Add'),
+									iconCls: 'icon-add',
+									handler: function() {
+										parent.add();
+									}
+								}]					        
+				        }),				        
+				        plugins: [new Ext.grid.GroupSummary(),this.actionsColumn],
+			            listeners: {
+			                'rowdblclick': function() {
+			                    	parent.edit();
+			                },
+			            	'rowcontextmenu': function(grid, rowIndex, e) {
+							    e.stopEvent();
+							    grid.selModel.selectRow(rowIndex);
+							
+							    var listContextMenu = new Ext.menu.Menu({
+							    	items: [
+							    		{
+							    			iconCls: 'icon-edit',
+							    			text: _('Edit'),
+							    			handler: function() {
+							    				parent.edit();
+							    			}
+							    		},
+							    		{
+							    			iconCls: 'icon-delete',
+							    			text: _('Delete'),
+							    			handler: function() {
+												parent.remove();
+							    			}
+							    		},
+							    		{
+							    			iconCls: 'icon-add',
+							    			text: _('Add'),
+							    			handler: function() {
+												parent.add();
+							    			}
+							    		},				    						    		
+							    	]
+							    });
+							    listContextMenu.showAt(e.getXY());				            	
+			            	},
+			            	'contextmenu': function(e) {
+							    e.stopEvent();
+							    var listContextMenu = new Ext.menu.Menu({
+							    	items: [
+							    		{
+							    			iconCls: 'icon-add',
+							    			text: _('Add'),
+							    			handler: function() {
+												parent.add()
+							    			}
+							    		},				    		
+							    	]
+							    });
+							    listContextMenu.showAt(e.getXY());
+							},
+						}			        
+				    });
+				    		    			
+    			},
+				load: function(panel) {
+					panel.addActive(this.grid);
+					this.ds.load({params:{start:0, limit: this.pagingBar.pageSize}});
+				},	    			    											
+			});
+			
+    		Local.FilterPanel = function(config) {
+				Ext.apply(this, config);
+			    this.addEvents(
+			        'filter'
+			    );				
+   				Local.FilterPanel.superclass.constructor.call(this);
+			};
+			
+			Ext.extend(Local.FilterPanel, Ext.util.Observable, {
+				init: function() {
+					var parent = this;
+					var dt = new Date();
+					dt.setDate(dt.getDate()-5);
+					this.current = { dateStart: Ext.util.Format.date(dt,'d/m/Y') };
+				    this.form = new Ext.FormPanel({
+						id: 'filter-panel',
+				    	region:'west',
+				    	collapsible: true,
+						collapsed: true,				    	
+				        labelAlign: 'top',
+				        frame:true,
+				        title: _('Filter'),
+				        width: 330,
+				        layout: 'column',
+			            items:[{
+			                columnWidth: .50,
+			                layout: 'form',
+							defaults: { width: 150
+										,maxLength: 255
+										,allowBlank: true
+										,selectOnFocus: true},
+			                items: [{
+			                    xtype:'datefield',
+			                    fieldLabel: _('Date from'),
+			                    id: 'dateFrom',
+			                    value: parent.current.dateStart
+			                },{
+			                    xtype:'numberfield',
+			                    fieldLabel: _('Amount from'),
+			                    id: 'amountFrom',
+			                    value: parent.current.amountStart
+			                },{
+								xtype: 'combo',
+								fieldLabel: _('Category'),
+								id: 'category',
+								forceSelection: true,
+								triggerAction: 'all',
+							   	store: categoryStore,
+							   	displayField: 'name',
+							   	valueField: 'id',
+							   	mode: 'local',
+							   	value: parent.current.cat
+			                },{
+						    	xtype : "combo",
+						    	fieldLabel: _('Payment Type'),
+						    	id: 'paymentType',
+						    	store: paymentTypeStore,
+								displayField:'name',
+								valueField:'id',
+						    	triggerAction:'all',
+						    	mode:'local',
+						    	forceSelection:true,
+						    	value: parent.current.payT
+						  	}]
+			            },{
+			                columnWidth: .50,
+			                layout: 'form',
+							defaults: { width: 150
+										,maxLength: 255
+										,allowBlank: true
+										,selectOnFocus: true},			                
+			                items: [{				  
+				                    xtype:'datefield',
+				                    fieldLabel: _('Date to'),
+				                    id: 'dateTo',
+			                        vtype: 'range',
+			                        cmpField: 'dateFrom',
+			                        value: parent.current.dateEnd
+			                	},{
+				                    xtype:'numberfield',
+				                    fieldLabel: _('Amount to'),
+				                    id: 'amountTo',
+				                    vtype: 'range',
+				                    cmpField: 'amountFrom',
+				                    value: parent.current.amountEnd
+			                	},{
+							    	xtype : "subCategoryCombo",
+							    	fieldLabel: _('Sub Category'),
+							    	id: 'subCategory',
+							    	store: subCategoryStore,
+							    	value: parent.current.subC
+						  		}]
+			            }],
+				        tbar: new Ext.Toolbar({
+				        	cls: 'plain_toolbar',
+							items:['->',{
+									text: _('Apply'),
+									iconCls: 'icon-apply',
+									formBind:true,
+									scope: this.form,
+									handler: function() {
+										forceValidation(parent.form.getForm());
+										if (parent.form.getForm().isValid()) {
+											parent.current = {
+							                		amountStart: parent.form.findById('amountFrom').getValue()
+							                		,amountEnd: parent.form.findById('amountTo').getValue()
+							                		,dateStart: parent.form.findById('dateFrom').getRawValue()
+							                		,dateEnd: parent.form.findById('dateTo').getRawValue()
+							                		,subC: parent.form.findById('subCategory').getValue()
+							                		,payT: parent.form.findById('paymentType').getValue()
+							                		,cat: parent.form.findById('category').getValue()									
+											};
+											parent.fireEvent('filter',parent.current);
+										}
+		                    		}
+								},{
+									text: _('Clear'),
+									iconCls: 'icon-clear',
+									handler: function() {
+										parent.current={};
+						                parent.form.findById('amountFrom').setValue("");
+						                parent.form.findById('amountTo').setValue("");
+						                parent.form.findById('dateFrom').setValue("");
+						                parent.form.findById('dateTo').setValue("");
+						                parent.form.findById('subCategory').setValue("");
+						                parent.form.findById('paymentType').setValue("");
+						                parent.form.findById('category').setValue("");
+										parent.fireEvent('filter',parent.current);
+									}						
+								}]					        
+				        }),	
+				    });
+				}
+			});
+			
+			var expenseModule = new Local.Expense();
+			expenseModule.init();
+			
+			var expenseFilter = new Local.FilterPanel({
+				listeners: {
+					'filter': function(params) {
+						expenseModule.ds.baseParams = params;
+						expenseModule.ds.load({params:{start:0, limit: expenseModule.pagingBar.pageSize}});
+					}
+				}
+			});
+			expenseFilter.init();
+
+			var expensePanel = new Ext.Panel({
+			    	id: 'expense-panel',
+			    	iconCls: 'menu-expense',
+					title: _('Expenses'),
+					layout:'border',
+					items: [expenseFilter.form, expenseModule.grid]
+			});
+			
+			mainTabPanel.addActive(expensePanel);
+			expenseModule.ds.baseParams = expenseFilter.current;
+			expenseModule.ds.load({params:{start:0, limit: expenseModule.pagingBar.pageSize}});
+
+		    loadStore(subCategoryStore);
+		    loadStore(paymentTypeStore);
+		    loadStore(categoryStore);
+		</script>
+    </head>
+    <body>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        {% loadScript "js/app/person.js" %}
+	    <script type="text/javascript">
+			var personMod = new Local.Person();
+			personMod.init();
+			personMod.grid.collapsed = false;
+			mainTabPanel.addActive(personMod.grid);
+			personMod.load();
+	    </script>
+	</head>
+    <body>
+    </body>	
+</html>

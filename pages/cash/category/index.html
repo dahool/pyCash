@@ -1,0 +1,557 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        {% loadExtUx "ListMenu" %}
+        {% loadExtUx "filter/Filter" %}
+        {% loadExtUx "filter/ListFilter" %}
+        {% loadExtUx "GridFilters" %}
+	    <script type="text/javascript">
+
+	    		Local.Category = function(config) {
+					Ext.apply(this, config);
+				    this.addEvents(
+				        'update'
+				    );							
+    				Local.Category.superclass.constructor.call(this);
+				};
+				
+				Ext.extend(Local.Category, Ext.util.Observable, {
+					reload: function(params) {
+						this.ds.reload(params);
+						if (categoryStore.isLoaded) categoryStore.reload();						
+					},
+					remove: function() {
+						var parent = this;
+						var record = parent.grid.selModel.getSelected().data;
+						Ext.Msg.confirm(
+							_('Sure?'),
+							String.format(_('Do you really want to delete {0}?'),record.name),
+							function(response) {
+								if('yes' == response) {
+									var rid = record.id;
+									$.postJSON('category/delete'
+										,{ id: rid }
+										,function(response){
+											if (response.success) {
+												parent.fireEvent('update',parent);
+												parent.reload();
+											} else {
+												Ext.Msg.error(response.msg);
+											}
+										},
+										String.format(_('Deleting {0}...'),record.name)
+									);											
+								}
+							}
+						);
+					},
+					
+		    		edit: function() {
+		    			var parent = this;
+		    			var record = parent.grid.selModel.getSelected().data;
+		    			var items = [
+							    {
+									xtype : "textfield",
+									cls : "x-hide-display",
+									hideLabel: true,
+						    		name : "id",
+									value: record.id,
+							  	},    
+							    {
+							    	xtype : "textfield",
+							    	fieldLabel: _('Name'),
+							    	name : "name",
+							    	id: "name",
+							    	value: record.name,
+							  	}]
+		    		
+						var ed = new EditWindow({
+							id: 'categoryEd',
+							url: 'category/update',
+							title: _('Editing...'),
+							width: 330,
+				            height: 120,
+				            iconCls: 'icon-edit',	
+				            focus: 'name',
+				            items: items,
+				            listeners: {
+				            	'success': function() {
+				            		parent.fireEvent('update',parent);
+				            		parent.reload();
+				            	}
+				            }				            								
+						});
+						ed.show();
+		    		},
+		    		
+		    		add: function(){
+		    			var parent = this;
+		    			var items = [
+							    {
+							    	fieldLabel: _('Name'), 
+							    	xtype : "textfield",
+							    	name : "name",
+							    	id: "name",
+							  	}]
+		    		
+						var ed = new EditWindow({
+							id: 'categoryAdd',
+							url: 'category/save',
+							title: _('New Category'),
+				            width: 330,
+				            height: 120,
+				            iconCls: 'icon-add',	
+				            focus: 'name',
+				            items: items,
+				            listeners: {
+				            	'success': function() {
+				            		parent.reload();
+				            	}
+				            }				            								
+						});
+						ed.show();
+		    		},
+	    		
+	    			init: function() {
+	    				var parent = this;
+						this.ds = new Ext.data.JsonStore({
+						    url: 'category/list',
+						    root: 'rows',
+						    totalProperty:'total',
+						    id:'id',
+						    fields: ['id','name'],
+						    sortInfo: {field: 'name', direction: 'ASC'},
+						    remoteSort: true,
+						});
+						
+					    this.pagingBar = new Ext.PagingToolbar({
+					        pageSize: 50,
+					        store: this.ds,
+					        displayInfo: true,
+							items:['-',
+									{
+									xtype: 'combo',
+									editable: false,
+									triggerAction: 'all',
+								   	store: getPageSizeList(),
+								   	width: 50,
+								   	value: 50,
+								   	listeners: {
+								   			select:
+								   				function(combo,record,index) {
+								   					this.pagingBar.pageSize = combo.lastSelectionText;
+								   					this.ds.reload({params:{start:0, limit: this.pagingBar.pageSize}});
+								   				}
+								   		}
+					                }]
+					    });						
+
+					 	this.actionsColumn = new Ext.ux.grid.RowActions({
+							actions:[{
+									iconCls:'icon-edit',
+									tooltip: _('Edit')
+								},{
+								iconCls:'icon-delete',
+								tooltip: _('Delete')		
+							}],
+							callbacks: {
+								'icon-edit': function(grid, record, action, rowIndex, colIndex) {
+											parent.edit();
+										},
+								'icon-delete': function(grid, record, action, rowIndex, colIndex) {
+											parent.remove();
+										},
+							}
+						});
+
+					    this.grid = new Ext.grid.GridPanel({
+					    	region: 'center',
+					    	id: 'category-grid',
+							store: this.ds,
+							title: _('Categories'),
+					        columns: [
+					        	this.actionsColumn
+					        	,{header: _('Name'), width: 50, sortable: true, dataIndex: 'name'}
+					        	
+					        ],
+					        bbar: this.pagingBar,
+					        tbar: new Ext.Toolbar({
+								items:[{
+										text: _('Add'),
+										iconCls: 'icon-add',
+										handler: function() {
+											parent.add();
+										}
+									}]
+				    		}),
+					        plugins: [this.actionsColumn],
+						    viewConfig: {
+						        forceFit: true
+						    },
+				            listeners: {
+				                'rowdblclick': function() {
+				                    	parent.edit()
+				                },
+				            	'rowcontextmenu': function(grid, rowIndex, e) {
+								    e.stopEvent();
+								    grid.selModel.selectRow(rowIndex);
+								    var listContextMenu = new Ext.menu.Menu({
+								    	items: [
+								    		{
+								    			iconCls: 'icon-edit',
+								    			text: _('Edit'),
+								    			handler: function() {
+								    				parent.edit();
+								    			}
+								    		},
+								    		{
+								    			iconCls: 'icon-delete',
+								    			text: _('Delete'),
+								    			handler: function() {
+													parent.remove();
+								    			}
+								    		},
+								    		{
+								    			iconCls: 'icon-add',
+								    			text: _('Add'),
+								    			handler: function() {
+								    				parent.add();
+								    			}
+								    		},				    						    		
+								    	]
+								    });
+								    listContextMenu.showAt(e.getXY());
+								},
+				            	'contextmenu': function(e) {
+								    e.stopEvent();
+								    var listContextMenu = new Ext.menu.Menu({
+								    	items: [
+								    		{
+								    			iconCls: 'icon-add',
+								    			text: _('Add'),
+								    			handler: function() {
+								    				parent.add();
+								    			}
+								    		},
+								    	]
+								    });
+								    listContextMenu.showAt(e.getXY());
+								},    
+				            }				    
+					    });
+			    						    			
+	    			},
+					load: function(panel) {
+						panel.addActive(this.grid);
+						this.ds.load({params:{start:0, limit: this.pagingBar.pageSize}});
+					},	    			    											
+				});
+				
+				/* ---- SUB CATEGORIES ---- */
+				
+	    		Local.SubCategory = function(config) {
+					Ext.apply(this, config);
+    				Local.SubCategory.superclass.constructor.call(this);
+				};
+				
+				Ext.extend(Local.SubCategory, Ext.util.Observable, {
+					reload: function(params) {
+						this.ds.reload(params);
+						if (subCategoryStore.isLoaded) subCategoryStore.reload();						
+					},
+					remove: function() {
+						var parent = this;
+						var record = parent.grid.selModel.getSelected().data;
+						Ext.Msg.confirm(
+							_('Sure?'),
+							String.format(_('Do you really want to delete {0}?'),record.name),
+							function(response) {
+								if('yes' == response) {
+									var rid = record.id;
+									$.postJSON('subCategory/delete'
+										,{ id: rid }
+										,function(response){
+											if (response.success) {
+												parent.reload();
+											} else {
+												Ext.Msg.error(response.msg);
+											}
+										},
+										String.format(_('Deleting {0}...'),record.name)
+									);											
+								}
+							}
+						);
+					},
+					
+		    		edit: function() {
+		    			var parent = this;
+		    			var record = parent.grid.selModel.getSelected().data;
+
+		    			var items = [
+							    {
+									xtype : "textfield",
+									cls : "x-hide-display",
+									hideLabel: true,
+						    		name : "id",
+									value: record.id,
+							  	},{
+									xtype: 'combo',
+									fieldLabel: _('Category'),
+									hiddenName: 'category.id',
+									forceSelection: true,
+									triggerAction: 'all',
+								   	store: categoryStore,
+								   	mode: 'local',
+								   	value: record.categoryId,
+								   	displayField: 'name',
+								   	valueField: 'id',								   	
+							  	},{
+							    	xtype : "textfield",
+							    	fieldLabel: _('Name'),
+							    	name : "name",
+							    	id: "name",
+							    	value: record.name,
+								}]
+
+						var ed = new EditWindow({
+							id: 'sCategoryEd',
+							url: 'subCategory/update',
+							title: _('Editing...'),
+							width: 330,
+				            height: 120,
+				            iconCls: 'icon-edit',	
+				            focus: 'name',
+				            items: items,
+				            listeners: {
+				            	'success': function() {
+				            		parent.reload();
+				            	}
+				            }				            								
+						});
+						ed.show();
+		    		},
+		    		
+		    		add: function(){
+		    			var parent = this;
+		    			var items = [
+								{
+									xtype: 'combo',
+									fieldLabel: _('Category'),
+									id: 'categoryId',
+									hiddenName: 'category.id',
+									forceSelection: true,
+									triggerAction: 'all',
+								   	store: categoryStore,
+								   	mode: 'local',
+								   	displayField: 'name',
+								   	valueField: 'id',								   	
+				                },		    			
+							    {
+							    	fieldLabel: _('Name'), 
+							    	xtype : "textfield",
+							    	name : "name",
+							    	id: "name",
+							  	}]
+
+						var ed = new EditWindow({
+							id: 'sCategoryAdd',
+							url: 'subCategory/save',
+							title: _('New SubCategory'),
+				            width: 330,
+				            height: 120,
+				            iconCls: 'icon-add',	
+				            focus: 'categoryId',
+				            items: items,
+				            listeners: {
+				            	'success': function() {
+				            		parent.reload();
+				            	}
+				            }				            								
+						});
+						ed.show();
+		    		},
+	    		
+	    			init: function() {
+	    				var parent = this;
+						this.ds = new Ext.data.JsonStore({
+						    url: 'subCategory/list',
+						    root: 'rows',
+						    totalProperty:'total',
+						    id:'id',
+						    fields: ['id','name','category','categoryId'],
+						    sortInfo: {field: 'name', direction: 'ASC'},
+						    remoteSort: true,
+						});
+						
+					    this.pagingBar = new Ext.PagingToolbar({
+					        pageSize: 50,
+					        store: this.ds,
+					        displayInfo: true,
+							items:['-',
+									{
+									xtype: 'combo',
+									editable: false,
+									triggerAction: 'all',
+								   	store: getPageSizeList(),
+								   	width: 50,
+								   	value: 50,
+								   	listeners: {
+								   			select:
+								   				function(combo,record,index) {
+								   					this.pagingBar.pageSize = combo.lastSelectionText;
+								   					this.ds.reload({params:{start:0, limit: this.pagingBar.pageSize}});
+								   				}
+								   		}
+					                }]
+					    });						
+
+					 	this.actionsColumn = new Ext.ux.grid.RowActions({
+							actions:[{
+									iconCls:'icon-edit',
+									tooltip: _('Edit')
+								},{
+								iconCls:'icon-delete',
+								tooltip: _('Delete')		
+							}],
+							callbacks: {
+								'icon-edit': function(grid, record, action, rowIndex, colIndex) {
+											parent.edit();
+										},
+								'icon-delete': function(grid, record, action, rowIndex, colIndex) {
+											parent.remove();
+										},
+							}
+						});
+
+						var filters = new Ext.ux.grid.GridFilters({
+								menuFilterText: _('Filter'),
+								filters:[
+								{type: 'list', dataIndex: 'category', 
+									store: categoryStore, single: 'true',
+									fieldName: 'category.id', labelField: 'name'},
+								],
+								local: false
+						});
+						
+					    this.grid = new Ext.grid.GridPanel({
+					    	region: 'east',
+					    	width: "50%",
+					        minSize: 150,
+					    	id: 'subCategory-grid',
+							store: this.ds,
+							title: _('Sub Categories'),
+					        columns: [
+					        	this.actionsColumn,
+					        	{header: _('Name'), width: 50, sortable: true, dataIndex: 'name'},
+					        	{header: _('Category'), width: 50, sortable: true, dataIndex: 'category'}
+					        ],
+					        bbar: this.pagingBar,
+					        tbar: new Ext.Toolbar({
+								items:[{
+										text: _('Add'),
+										iconCls: 'icon-add',
+										handler: function() {
+											parent.add();
+										}
+									}]
+				    		}),
+					        plugins: [this.actionsColumn, filters],
+						    viewConfig: {
+						        forceFit: true
+						    },
+				            listeners: {
+				                'rowdblclick': function() {
+				                    	parent.edit()
+				                },
+				            	'rowcontextmenu': function(grid, rowIndex, e) {
+								    e.stopEvent();
+								    grid.selModel.selectRow(rowIndex);
+								    var listContextMenu = new Ext.menu.Menu({
+								    	items: [
+								    		{
+								    			iconCls: _('Edit'),
+								    			text: '<g:message code="label.edit"/>',
+								    			handler: function() {
+								    				parent.edit();
+								    			}
+								    		},
+								    		{
+								    			iconCls: 'icon-delete',
+								    			text: _('Delete'),
+								    			handler: function() {
+													parent.remove();
+								    			}
+								    		},
+								    		{
+								    			iconCls: 'icon-add',
+								    			text: _('Add'),
+								    			handler: function() {
+								    				parent.add();
+								    			}
+								    		},				    						    		
+								    	]
+								    });
+								    listContextMenu.showAt(e.getXY());
+								},
+				            	'contextmenu': function(e) {
+								    e.stopEvent();
+								    var listContextMenu = new Ext.menu.Menu({
+								    	items: [
+								    		{
+								    			iconCls: 'icon-add',
+								    			text: _('Add'),
+								    			handler: function() {
+								    				parent.add();
+								    			}
+								    		},
+								    	]
+								    });
+								    listContextMenu.showAt(e.getXY());
+								},    
+				            }				    
+					    });
+			    						    			
+	    			},
+					load: function(panel) {
+						panel.addActive(this.grid);
+						this.ds.load({params:{start:0, limit: this.pagingBar.pageSize}});
+					},	    			    											
+				});
+								
+				var categoryModule = new Local.Category();
+				categoryModule.init();
+				
+				var subCategoryModule = new Local.SubCategory();
+				subCategoryModule.init();
+
+				categoryModule.on({
+					'update': function() {
+						subCategoryModule.reload();
+					}
+				});
+				
+			    var categoryPanel = new Ext.Panel({
+			    	id: 'category-panel',
+					title: _('Category'),
+					iconCls : 'menu-item',
+					layout:'border',
+					defaults: {
+					    collapsible: false,
+					    split: true,
+					},
+					items: [subCategoryModule.grid,categoryModule.grid]
+			    });				
+
+				mainTabPanel.addActive(categoryPanel);
+				
+				categoryModule.ds.load({params:{start:0, limit: categoryModule.pagingBar.pageSize}});
+				subCategoryModule.ds.load({params:{start:0, limit: subCategoryModule.pagingBar.pageSize}});
+				loadStore(categoryStore);
+				
+	    </script>
+	</head>
+    <body>
+    </body>
+</html>

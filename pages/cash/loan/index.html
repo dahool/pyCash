@@ -1,0 +1,70 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		{% loadUxStyle "GroupSummary.css" %}
+		{% loadExtUx "GroupSummary" %}
+		{% loadExtUx "GridSummary" %}
+		{% loadExtUx "JsonGroupStore" %}
+		{% loadScript "js/app/person.js" %}
+		{% loadScript "js/app/payment.js" %}
+		{% loadScript "js/app/personPayment.js" %}
+		{% loadScript "js/app/loan.js" %}  
+	    <script type="text/javascript">
+			var personMod = new Local.Person();
+			personMod.init();
+			
+			var loanMod = new Local.Loan();
+			loanMod.init();
+
+			var loanPaymentMod = new Local.LoanPayment();
+			loanPaymentMod.init();
+
+			var loanPPaymentMod = new Local.LoanPersonPayment();
+			loanPPaymentMod.init();
+			
+			loanMod.on({
+				'select': function(record) {
+					loanPaymentMod.load(record);
+				},
+				'payment': function(record) {
+					loanPaymentMod.add();
+				},
+				'personPayment': function(record) {
+					loanPPaymentMod.add();
+				}
+			})
+
+			loanPaymentMod.on({
+				'update': function() {
+					loanMod.reload();
+				}
+			})
+
+			loanPPaymentMod.on({
+				'update': function() {
+					loanMod.reload();
+				}
+			})
+						
+			var loanPanel = new Ext.Panel({
+			    	id: 'loan-panel',
+			    	iconCls : 'menu-loan',
+					title: _('Loans'),
+					layout:'border',
+					defaults: {
+					    split: true,
+					},					
+					items: [loanMod.grid, personMod.grid, loanPaymentMod.grid]
+			});
+			
+			mainTabPanel.addActive(loanPanel);
+			loanMod.load();
+			personMod.load();
+
+			loadStore(personStore);
+	    </script>
+	</head>
+    <body>
+    </body>	
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="pyCash" default="main" basedir=".">
+
+	<property file="build.properties"/>
+	
+	<target name="main">
+		<echo message="Setting up ${dest}..."/>
+		<delete dir="${dest}"/>
+		<echo message="Installing..."/>
+		<copy overwrite="true" verbose="true" todir="${dest}" includeemptydirs="false">
+			<fileset dir=".">
+				<exclude name=".svn"/>
+				<exclude name="*.pyc"/>
+			</fileset>
+		</copy>
+		<touch file="${dest}/${prod.lock.file}"/>	
+		<echo message="Setting up environment..."/>
+		<exec executable="/usr/bin/python">
+			<arg value="${dest}/manage.py"/>
+			<arg value="cleanup"/>
+		</exec>
+		<exec executable="/usr/bin/python">
+			<arg value="-mcompileall"/>
+			<arg value="${dest}"/>
+		</exec>		
+		<exec executable="/usr/bin/python">
+			<arg value="${dest}/manage.py"/>
+			<arg value="syncdb"/>
+			<arg value="--noinput"/>
+		</exec>
+		<echo message="Finished."/>
+	</target>
+
+</project>

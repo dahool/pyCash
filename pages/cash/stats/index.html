@@ -1,0 +1,35 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		{% loadUxStyle "Portal.css" %}
+		{% loadExtUx "Ext.ux.MonthPicker" %}
+		{% loadExtUx "Portal" %}
+		{% loadScript "js/jquery/jquery.flot.pack.js" %}
+		{% loadScript "js/jquery/jquery.domec.min.js" %}
+		{% loadScript "js/app/stats.js" %}
+		<script type="text/javascript"><!--
+
+			var totalModule = new Local.Totalizer();
+			totalModule.init();
+			totalModule.load(mainTabPanel);
+			
+		    loadStore(subCategoryStore);
+		    loadStore(paymentTypeStore);
+		    loadStore(categoryStore);
+/*
+			var m = new Portlet.MonthGraph();
+			m.bind(totalModule);
+
+			var s = new Portlet.SixMonthGraph();
+			s.bind(totalModule);
+*/
+			var b = new Portlet.SixMonthTable();
+			b.bind(totalModule);
+			
+		--></script>
+    </head>
+    <body>
+    	
+    </body>
+</html>

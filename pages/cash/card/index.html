@@ -1,0 +1,38 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        {% loadExtUx "JsonGroupStore" %}
+        {% loadScript "js/app/card.js" %}
+        {% loadScript "js/app/cardDates.js" %}
+	    <script type="text/javascript">
+	    
+			var cardModule = new Local.Card();
+			cardModule.init();
+
+			var cardDateModule = new Local.CardDates();
+			cardDateModule.init();
+
+		    var cardPanel = new Ext.Panel({
+		    	id: 'card-panel',
+				title: _('Cards'),
+				iconCls : 'menu-item',
+				layout:'border',
+				defaults: {
+				    split: true,
+				},
+				items: [cardModule.grid,cardDateModule.grid]
+		    });
+			    
+			mainTabPanel.addActive(cardPanel);
+			cardModule.load();
+			cardDateModule.load();
+						    
+			loadStore(cardStore);
+			loadStore(paymentTypeStore);
+			
+	    </script>
+	</head>
+    <body>
+    </body>	
+</html>
