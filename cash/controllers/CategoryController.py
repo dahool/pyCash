@@ -1,15 +1,17 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from pyCash.cash.services import JsonParser
-from pyCash.cash.models import Category
+from cash.services import JsonParser
+from cash.models import Category
 from django.db.models import Q
-from pyCash.cash.services.RequestUtils import param_exist, sortMethod
+from cash.services.RequestUtils import param_exist, sortMethod
 from django.db import IntegrityError
+from cash.decorators import json_response
 
 def index(request):
     return render_to_response('cash/category/index.html', {})
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = Category.objects.filter()
@@ -18,12 +20,13 @@ def list(request):
     if param_exist("limit",request.REQUEST):
         start = request.REQUEST['start']
         limit = request.REQUEST['limit']
-        list = q[start:limit]
+        lst = q[start:limit]
     else:
-        list = q
-    data = '{"total": %s, "rows": %s}' % (Category.objects.count(), JsonParser.parse(list))
-    return HttpResponse(data, mimetype='text/javascript;')
+        lst = q
+    data = '{"total": %s, "rows": %s}' % (Category.objects.count(), JsonParser.parse(lst))
+    return data
 
+@json_response
 def save(request):
     c = Category(name=request.REQUEST['name'])
     try:
@@ -33,8 +36,9 @@ def save(request):
         data = '{"success":false, msg: "%s"}' % (_("Category '%s' already exists.") % (request.REQUEST['name']))
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)           
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
     
+@json_response    
 def update(request):
     c = Category(pk=request.REQUEST['id'],name=request.REQUEST['name'])
     try:
@@ -44,8 +48,9 @@ def update(request):
         data = '{"success":false, msg: "%s"}' % (_("Category '%s' already exists.") % (request.REQUEST['name']))
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)           
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def delete(request):
     c = Category(pk=request.REQUEST['id'])
     try:
@@ -53,4 +58,4 @@ def delete(request):
         data = '{"success":true}'
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)           
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data

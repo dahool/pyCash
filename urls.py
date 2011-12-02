@@ -7,8 +7,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^cash/$','pyCash.cash.views.index'),
-    (r'^cash/',include('pyCash.cash.controllers.urls')),
+    (r'^cash/$','cash.views.index'),
+    (r'^cash/',include('cash.controllers.urls')),
     (r'^admin/', include(admin.site.urls)),
 )
 

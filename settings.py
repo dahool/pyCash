@@ -6,7 +6,7 @@ PROJECT_PATH = os.path.normpath(os.path.abspath(os.path.dirname(__file__)))
 
 isProd = os.path.exists(os.path.join(PROJECT_PATH,"prod.key"))
 
-VERSION = "0.8.2"
+VERSION = "0.8.3"
 APPLICATION = "pyCash"
 
 JQUERY_VERSION = '1.3.2'
@@ -25,19 +25,25 @@ ADMINS = (
 MANAGERS = ADMINS
 
 if isProd:
-    DATABASE_ENGINE = 'mysql'
-    DATABASE_NAME = 'expenses'
-    DATABASE_USER = 'root'
-    DATABASE_PASSWORD = 'root'
-    DATABASE_HOST = ''
-    DATABASE_PORT = ''
+    DATABASES = {
+        'default': {
+            'NAME': 'expenses',
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': '',
+        },
+    }
 else:    
-    DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-    DATABASE_NAME = 'exp'             # Or path to database file if using sqlite3.
-    DATABASE_USER = 'root'             # Not used with sqlite3.
-    DATABASE_PASSWORD = 'root'         # Not used with sqlite3.
-    DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-    DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+    DATABASES = {
+        'default': {
+            'NAME': 'exp',
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': 'exp',
+            'PASSWORD': 'exp',
+            'HOST': '166.40.231.124',
+        },
+    }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -59,20 +65,19 @@ USE_I18N = True
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '5894g(v(td&*gb^0vd11r&#2$1i^2^yz#-zka^)@&tq^))_p0c'
 
-# List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader'
 )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_mobile.middleware.MobileMiddleware',
 )
 
-ROOT_URLCONF = 'pyCash.urls'
+ROOT_URLCONF = 'urls'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -84,6 +89,15 @@ MEDIA_ROOT = os.path.join(PROJECT_PATH,'pages','media')
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH,'pages'),
 )
+
+MOBILE_UTILS_SETTINGS = {
+    'MOBILE_TEMPLATES_DIR': (
+        os.path.join(PROJECT_PATH,'mobile'),
+    ),
+    'IGNORE_LIST':[],                        #tuple of browsers to ignore    
+    'USER_AGENTS_FILE': os.path.join(PROJECT_PATH,'django_mobile','data','mobile_agents.txt'),  # line-broken strings to match
+    'USE_REGEX':False                      # use RegEx to do the string search
+}
 
 EXT_LOCATION = 'js/ext/' + EXT_VERSION + '/'
 UX_LOCATION = EXT_LOCATION + 'ux/'
@@ -107,7 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'pyCash.cash',
+    'cash',
     #'django_evolution',
 )
 

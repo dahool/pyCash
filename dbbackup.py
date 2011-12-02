@@ -11,12 +11,23 @@ from pyCash import settings
 SENDMAIL = "/usr/sbin/sendmail" 
 MYSQLDUMP = "/usr/bin/mysqldump"
 
-username = settings.DATABASE_USER
-password = settings.DATABASE_PASSWORD
-database = settings.DATABASE_NAME
-host = settings.DATABASE_NAME
+    DATABASES = {
+        'default': {
+            'NAME': 'expenses',
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': '',
+        },
+    }
+    
+    
+username = settings.DATABASES['DEFAULT']['USER']
+password = settings.DATABASES['DEFAULT']['PASSWORD']
+database = settings.DATABASES['DEFAULT']['NAME']
+host = settings.DATABASES['DEFAULT']['HOST']
 
-if settings.DATABASE_HOST == '':
+if host == '':
     host = 'localhost'
     
 path = '/tmp'

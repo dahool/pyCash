@@ -1,4 +1,4 @@
-from pyCash.cash.models import *
+from cash.models import *
 from django.contrib import admin
 
 admin.site.register(Category)

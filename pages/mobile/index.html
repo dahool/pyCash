@@ -1,0 +1,51 @@
+{% load media_load %}
+<!DOCTYPE HTML>
+<html>
+<head>
+{% block header %}
+<title>{{settings.APPLICATION}} Mobile</title>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% loadMedia "mobile/jquery.mobile-1.0.min.css" %}
+{% loadMedia "mobile/mobile.extra.css" %}
+{% loadMedia "mobile/jquery.mobile.datebox.min.css" %}
+{% loadMedia "mobile/swipe.css" %}
+{% loadMedia "mobile/default.css" %}
+{% loadScript "js/dutils.js" %}
+{% loadScript "mobile/jquery-1.7.1.min.js" %}
+{% loadScript "mobile/functions.js" %}
+{% loadScript "mobile/remote.js" %}
+{% loadScript "mobile/expense.list.js" %}
+{% loadScript "mobile/application.js" %}
+{% loadScript "mobile/jquery.mobile-1.0.min.js" %}
+{% loadScript "mobile/jquery.mobile.datebox.min.js" %}
+{% loadScript "mobile/jquery.mobile.datebox.i8n.es.js" %}
+<script type="text/javascript">
+    dutils.conf.urls.payment_type_list = "{% url payment_type_list %}";
+    dutils.conf.urls.subcategory_list = "{% url subcategory_list %}";
+</script>
+{% endblock %}
+</head>
+<body>
+{% block content %}
+<div data-role="page">
+	<div data-role="header">
+		<h1>Cash for Mobile</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<ul data-role="listview" data-inset="true" >
+			<li>
+                <a href="{% url mobile_expenses %}">Gastos</a> 
+			</li>
+			<li>
+				<a href="loans.html">Prestamos</a> 
+			</li>
+		</ul>
+	</div><!-- /content -->
+
+</div><!-- /page -->
+{% endblock %}
+</body>
+</html>

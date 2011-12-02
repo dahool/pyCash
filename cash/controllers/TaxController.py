@@ -1,16 +1,16 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from pyCash.cash.models import Expense, SubCategory, PaymentType, Tax
-from pyCash.cash.services import JsonParser, DateService, googlecalendar
+from cash.models import Expense, SubCategory, PaymentType, Tax
+from cash.services import JsonParser, DateService, googlecalendar
 from django.db.models import Q
-from pyCash.cash.services.RequestUtils import param_exist, sortMethod
+from cash.services.RequestUtils import param_exist, sortMethod
 import _mysql_exceptions
 import datetime
 import time
 from django.db import transaction
-from pyCash import settings
-from pyCash.cash.services.Utils import show_sql, get_logger
+from django.conf import settings
+from cash.services.Utils import show_sql, get_logger
 import sys
  
 def index(request):

@@ -1,10 +1,10 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from pyCash.cash.models import Expense, SubCategory, PaymentType
-from pyCash.cash.services import JsonParser, DateService
+from cash.models import Expense, SubCategory, PaymentType
+from cash.services import JsonParser, DateService
 from django.db.models import Q
-from pyCash.cash.services.RequestUtils import param_exist, sortMethod
+from cash.services.RequestUtils import param_exist, sortMethod
 import _mysql_exceptions
 
 def index(request):

@@ -1,6 +1,6 @@
 from django import template
 from django.template import Node, Template, Context
-from pyCash import settings
+from django.conf import settings
 
 register = template.Library()
 

@@ -1,0 +1,62 @@
+{% extends "mobile/index.html "%}
+<!DOCTYPE HTML>
+<html>
+<head>
+{% block header %}
+{{ block.super }} 
+{% endblock %}
+<body>
+{% block content %}
+<div data-role="page">
+	<div data-role="header" data-theme="e">
+        <a href="{% url mobile_expenses %}" data-icon="minus" data-theme="b">Cancelar</a>
+        <h1>Gastos</h1>
+        <a data-icon="check" data-theme="c" form-submit="form-add">Guardar</a>
+	</div><!-- /header -->
+
+	<div data-role="content">
+        <form id="form-add">
+            <ul data-role="listview" data-inset="true">
+                <li>
+                <div data-role="fieldcontain">
+                    <label for="date">Fecha:</label>
+                    <input type="date" data-role="datebox" value="{% now "d/m/Y" %}" name="date" id="date" data-options='{"buttonTheme": "b", "disableManualInput": true}' />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="amount">Monto:</label>
+                    <input type="number" name="amount" id="amount"/>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="text">Descripci&oacute;n:</label>
+                    <input type="text" name="text" maxlength="" id="text"/>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="ptype">Tipo de Pago:</label>
+                    <select name="ptype" id="ptype" data-overlay-theme="b" data-native-menu="false">
+                    {% for ptype in paymentTypeList %}
+                    	<option value="{{ptype.id}}">{{ptype.name}}</option>
+                    {% endfor %}
+                    </select>                
+                </div>            
+                <div data-role="fieldcontain">
+                    <label for="category">Categor&iacute;a:</label>
+                    <select name="category" id="category" data-overlay-theme="b" data-native-menu="false">
+                    	<option data-placeholder='true'>Categor&iacute;a</option>
+                    {% regroup categoryList by category.name as category_list %}
+					{% for category in category_list %}
+						<optgroup label="{{category.grouper}}">
+				        {% for item in category.list %}
+				        <option value="{{item.id}}">{{item.name}}</option>
+				        {% endfor %}
+					    </optgroup>
+					{% endfor %}
+                    </select>                
+                </div>        
+                </li>
+            </ul>
+        </form>
+	</div><!-- /content -->
+</div><!-- /page -->
+{% endblock %}
+</body>
+</html>

@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from pyCash.cash.controllers import TaxController as controller
+from cash.controllers import TaxController as controller
 
 urlpatterns = patterns('',
     (r'^upcomingList$', controller.upcomingList),

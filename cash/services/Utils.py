@@ -1,7 +1,7 @@
 from django.db import connection
 import logging
 import logging.handlers
-from pyCash import settings
+from django.conf import settings
 
 def show_sql():
     print connection.queries

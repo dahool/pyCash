@@ -1,0 +1,32 @@
+{% extends "mobile/index.html "%}
+<!DOCTYPE HTML>
+<html>
+<head>
+{% block header %}
+{{ block.super }} 
+{% endblock %}
+<body>
+{% block content %}
+<div data-role="page">
+	<div data-role="header" data-theme="f">
+        <a href="{% url mobile_home %}" data-icon="home" data-iconpos="notext"></a>
+        <h1>Gastos</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider">Gastos</li>
+			<li>
+                <a href="{% url mobile_expenses_add %}">Nuevo</a>
+			</li>
+			<li>
+				<a href="{% url mobile_expenses_list %}">Listado</a>
+			</li>
+		</ul>
+	</div><!-- /content -->
+</div><!-- /page -->
+{% endblock %}
+</body>
+</html>
+
+

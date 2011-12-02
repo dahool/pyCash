@@ -1,19 +1,24 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from pyCash.cash.services import JsonParser
-from pyCash.cash.models import SubCategory, Category
+from cash.services import JsonParser
+from cash.models import SubCategory, Category
 from django.db.models import Q
-from pyCash.cash.services.RequestUtils import param_exist, sortMethod
+from cash.services.RequestUtils import param_exist, sortMethod
 from django.db import IntegrityError
+from cash.decorators import json_response
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = SubCategory.objects.filter()
     if param_exist("filter[0][field]",req):
         q = q.filter(category=req['filter[0][data][value]'])
     if param_exist("sort",req):
-        q = q.order_by(sortMethod(req))
+        if req['sort'] == "category":
+            q = q.order_by(sortMethod(req,"category__name"), "name")
+        else:
+            q = q.order_by(sortMethod(req))
     if param_exist("limit",request.REQUEST):
         start = request.REQUEST['start']
         limit = request.REQUEST['limit']
@@ -27,8 +32,9 @@ def list(request):
                     'categoryId': elem.category.id})
         
     data = '{"total": %s, "rows": %s}' % (SubCategory.objects.count(), JsonParser.parse(res))
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def save(request):
     c = Category(pk=request.REQUEST['category.id'])
     try:
@@ -46,8 +52,9 @@ def save(request):
     else:
         data = '{"success":false, msg: "%s"}' % (_("Sub Category '%s' already exists.") % (request.REQUEST['name']))
         
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
     
+@json_response    
 def update(request):
     c = Category(pk=request.REQUEST['category.id'])
     s = SubCategory(pk=request.REQUEST['id'],name=request.REQUEST['name'], category=c)
@@ -58,8 +65,9 @@ def update(request):
         data = '{"success":false, msg: "%s"}' % (_("Sub Category '%s' already exists.") % (request.REQUEST['name']))
     except:
         data = '{"success":true}' 
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def delete(request):
     s = SubCategory(pk=request.REQUEST['id'])
     try:
@@ -67,4 +75,4 @@ def delete(request):
         data = '{"success":true}'
     except:
         data = '{"success":false}'    
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data

@@ -1,0 +1,6 @@
+.ui-li-divider {
+    text-align: center;
+}
+label.ui-input-text, label.ui-select {
+	font-weight: bold !important;
+}

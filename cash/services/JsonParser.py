@@ -2,6 +2,8 @@ import types
 from django.db import models
 from django.utils import simplejson as json
 from django.core.serializers.json import DateTimeAwareJSONEncoder
+from django.core import serializers
+from django.utils.encoding import force_unicode
 from decimal import *
 import time
 import datetime
@@ -28,6 +30,9 @@ def parse(data):
             ret = _list(data)
         elif isinstance(data, models.Model):
             ret = _model(data)
+        elif isinstance(data, models.base.ModelState):
+            #ret = _list(force_unicode(data))
+            ret = None
         elif isinstance(data, datetime.date):
             ret = time.strftime("%Y/%m/%d",data.timetuple())
         else:
@@ -43,7 +48,8 @@ def parse(data):
         fields = dir(data.__class__) + ret.keys()
         add_ons = [k for k in dir(data) if k not in fields]
         for k in add_ons:
-            ret[k] = _any(getattr(data, k))
+            if '_state' != k:
+                ret[k] = _any(getattr(data, k))
         return ret
     
     def _list(data):

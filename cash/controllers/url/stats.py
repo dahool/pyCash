@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from pyCash.cash.controllers import StatsController as controller
+from cash.controllers import StatsController as controller
 
 urlpatterns = patterns('',
     (r'^calc$', controller.calc),                       

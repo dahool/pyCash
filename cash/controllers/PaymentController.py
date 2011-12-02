@@ -1,16 +1,18 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from pyCash.cash.models import Person, Loan, Payment
-from pyCash.cash.services import JsonParser, DateService
-from pyCash.cash.services.RequestUtils import param_exist, sortMethod
+from cash.models import Person, Loan, Payment
+from cash.services import JsonParser, DateService
+from cash.services.RequestUtils import param_exist, sortMethod
 from django.db.models import Q
 from django.db import IntegrityError, connection
 from decimal import *
 import string
 import _mysql_exceptions
-import simplejson as json
+from django.utils import simplejson as json
+from cash.decorators import json_response
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = Payment.objects.filter()
@@ -25,8 +27,9 @@ def list(request):
     else:
         list = q
     data = '{"total": %s, "rows": %s}' % (Payment.objects.count(), JsonParser.parse(list))
-    return HttpResponse(data, mimetype='text/javascript;')
-
+    return data
+    
+@json_response
 def save(request):
     req = request.REQUEST
     l = Loan.objects.get(pk=req['loan.id'])
@@ -43,8 +46,9 @@ def save(request):
     else:
         data = '{"success":false, msg: "%s"}' % (_('The entered amount is greater than the amount owned'))
           
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
     
+@json_response    
 def update(request):
     req = request.REQUEST
     l = Loan.objects.get(pk=req['loan.id'])
@@ -63,7 +67,7 @@ def update(request):
     else:
         data = '{"success":false, msg: "%s"}' % (_('The entered amount is greater than the amount owned'))
                         
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
 def checkPayment(loan, amount, oldAmount):
     cursor = connection.cursor()
@@ -81,6 +85,7 @@ def checkPayment(loan, amount, oldAmount):
         return False
     return True
 
+@json_response
 def delete(request):
     p = Payment(pk=request.REQUEST['id'])
     try:
@@ -88,8 +93,9 @@ def delete(request):
         data = '{"success":true}'
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)     
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def calcPayment(request):
     req = request.REQUEST
     q = Loan.objects.filter()
@@ -162,4 +168,4 @@ def calcPayment(request):
         if resto == 0:
             break
     data = '{"total": "0", "rows": %s}' % (JsonParser.parse(res))        
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data

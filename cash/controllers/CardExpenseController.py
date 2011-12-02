@@ -1,9 +1,9 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from pyCash.cash.models import CardDates, Card, CardData, Person, Loan
-from pyCash.cash.services import JsonParser, DateService, FinancialService
-from pyCash.cash.services.RequestUtils import param_exist, sortMethod
+from cash.models import CardDates, Card, CardData, Person, Loan
+from cash.services import JsonParser, DateService, FinancialService
+from cash.services.RequestUtils import param_exist, sortMethod
 from django.db.models import Q
 from django.db import IntegrityError
 import _mysql_exceptions

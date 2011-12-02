@@ -1,15 +1,17 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from pyCash.cash.models import PaymentType
-from pyCash.cash.services import JsonParser
-from pyCash.cash.services.RequestUtils import param_exist, sortMethod
+from cash.models import PaymentType
+from cash.services import JsonParser
+from cash.services.RequestUtils import param_exist, sortMethod
 from django.db.models import Q
 from django.db import IntegrityError
+from cash.decorators import json_response
 
 def index(request):
     return render_to_response('cash/paymentType/index.html', {})
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = PaymentType.objects.filter()
@@ -22,8 +24,9 @@ def list(request):
     else:
         list = q
     data = '{"total": %s, "rows": %s}' % (PaymentType.objects.count(), JsonParser.parse(list))
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def save(request):
     req = request.REQUEST
     p = PaymentType(name=req['name'])
@@ -37,8 +40,9 @@ def save(request):
         pass
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
     
+@json_response    
 def update(request):
     p = PaymentType(pk=request.REQUEST['id'],name=request.REQUEST['name'])
     data = '{"success":true}'
@@ -50,8 +54,9 @@ def update(request):
         pass
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def delete(request):
     p = PaymentType(pk=request.REQUEST['id'])
     try:
@@ -59,5 +64,4 @@ def delete(request):
         data = '{"success":true}'
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)
-
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data

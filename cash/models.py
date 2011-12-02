@@ -1,5 +1,5 @@
 from django.db import models
-from pyCash.cash.services.ModelUtils import capFirst
+from cash.services.ModelUtils import capFirst
 
 class Income(models.Model):
     period = models.DateField(db_index=True)
