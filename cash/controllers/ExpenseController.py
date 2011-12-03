@@ -5,7 +5,12 @@ from cash.models import Expense, SubCategory, PaymentType
 from cash.services import JsonParser, DateService
 from django.db.models import Q
 from cash.services.RequestUtils import param_exist, sortMethod
-import _mysql_exceptions
+try:
+    import _mysql_exceptions
+except:
+    import cash.exceptions as _mysql_exceptions
+from cash.decorators import json_response
+from cash.exceptions import ValidationError
 
 def index(request):
     return render_to_response('cash/expense/index.html', {})
@@ -13,6 +18,7 @@ def index(request):
 def stats(request):
     return render_to_response('cash/expense/stats.html', {})
 
+@json_response
 def calc(request):
     req = request.REQUEST
     if param_exist("date",req):
@@ -44,8 +50,9 @@ def calc(request):
 
     avg = sum / days
     data = '{"data":{"total":%s,"avg":%s}}' % (sum,avg)
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data
 
+@json_response
 def monthCalc(request):
     req = request.REQUEST
     if param_exist("date",req):
@@ -73,8 +80,9 @@ def monthCalc(request):
         list.append('[%d,%s]' % (int(DateService.toLong(exp['date'])),exp['sum']))
     
     data = "[" + ",".join(list) + "]"
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data
 
+@json_response
 def sixMonthCalc(request):
     req = request.REQUEST
     if param_exist("date",req):
@@ -101,8 +109,9 @@ def sixMonthCalc(request):
         list.append('[%d,%s]' % (DateService.toLong(exp['date']),exp['sum']))
 
     data = "[" + ",".join(list) + "]"
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = Expense.objects.filter()
@@ -136,11 +145,23 @@ def list(request):
                     'subCategoryId': exp.subCategory.id})
 
     data = '{"total": %s, "rows": %s}' % (q.count(), JsonParser.parse(res))
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data
 
 def fromParams(req):
-    s = SubCategory.objects.get(pk=req['subCategory.id'])
-    p = PaymentType(pk=req['paymentType.id'])
+    if not req['date']:
+        raise ValidationError(_('Enter a valid date'))
+    if not req['amount'] or float(req['amount']) == 0.0:
+        raise ValidationError(_('Enter a valid amount'))
+        
+    try:
+        s = SubCategory.objects.get(pk=req['subCategory.id'])
+    except SubCategory.DoesNotExist:
+        raise ValidationError(_('Select a valid category'))
+    try:
+        p = PaymentType.objects.get(pk=req['paymentType.id'])
+    except PaymentType.DoesNotExist:
+        raise ValidationError(_('Select a valid payment type'))
+        
     if param_exist("text",req):
         text = req['text']
     else:
@@ -157,7 +178,31 @@ def fromParams(req):
     e.subCategory=s
     e.paymentType=p
     return e
+
+@json_response
+def save_or_update(request):
+    req = request.REQUEST
+    try:
+        e = fromParams(req)
+    except ValidationError, e:
+        data = '{"success":false, msg: "%s"}' % (e)
+        return data
+        
+    if e.id:
+        data = '{"success":true, msg: "%s"}' % (_('Updated expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})
+    else:
+        data = '{"success":true, msg: "%s"}' % (_('Created expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})
+        
+    try:
+        e.save()
+    except _mysql_exceptions.Warning:
+        pass
+    except Exception, e1:
+        data = '{"success":false, msg: "%s"}' % (e1.args)
     
+    return data
+
+#deprecated
 def save(request):
     req = request.REQUEST
     e = fromParams(req)
@@ -172,6 +217,7 @@ def save(request):
     
     return HttpResponse(data, mimetype='text/javascript;')
 
+#deprecated
 def update(request):
     req = request.REQUEST
     e = fromParams(req)
@@ -186,7 +232,7 @@ def update(request):
     
     return HttpResponse(data, mimetype='text/javascript;')
 
-# TODO
+@json_response
 def delete(request):
     e = Expense(pk=request.REQUEST['id'])
     try:
@@ -194,4 +240,4 @@ def delete(request):
         data = '{"success":true}'
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)   
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data

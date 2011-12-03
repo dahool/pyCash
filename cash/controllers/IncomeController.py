@@ -5,7 +5,10 @@ from cash.models import Income
 from cash.services import JsonParser, DateService
 from django.db.models import Q
 from cash.services.RequestUtils import param_exist, sortMethod
-import _mysql_exceptions
+try:
+    import _mysql_exceptions
+except:
+    import cash.exceptions as _mysql_exceptions
 import datetime
 
 def index(request):

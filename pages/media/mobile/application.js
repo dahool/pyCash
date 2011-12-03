@@ -1,9 +1,27 @@
-/*
 $(function() {
-	retrievePaymentType();
-	retrieveCategories();
-});
 
+        // catch forms
+    $(document).on("pageload", function() {
+        $('[form-submit]').on("click",function() {
+            frm = $(this).attr('form-submit');
+            $.ajax({
+                type: 'POST',
+                url: $(frm).attr('action'),
+                data: $(frm).serialize(),
+                success: function(data) {
+                    alert(data.msg);
+                },
+                error: function(req, data) {
+                    alert(data);
+                },
+                dataType: "json"
+            })        
+            return false;
+        }); 
+    });
+    
+});
+/*
 $(document).live("pageinit", function( event, data ){
     if ($("#ptype").length > 0 && $("#ptype > option").size() == 0) {
     	console.log("1");

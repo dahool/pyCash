@@ -21,7 +21,7 @@ class JSONResponse(HttpResponse):
                 content = serialize_to_json(content,**json_opts)
             else:
                 content = serialize_to_json([],**json_opts)
-
+        mimetype = "text/javascript";
         if (JSONP_CALLBACK in request.REQUEST):
             content = '%s(%s)' % (request.REQUEST[JSONP_CALLBACK], serialize_to_json(content));
         super(JSONResponse,self).__init__(content,mimetype,*args,**kwargs)

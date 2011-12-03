@@ -27,8 +27,8 @@ def expensesList(request):
 
 
 urlpatterns = patterns('',
-    url(r'^expenses/$', expenses, name='mobile_expenses'),
-    url(r'^expenses/add/$', expensesAdd, name='mobile_expenses_add'),
-    url(r'^expenses/list/$', expensesList, name='mobile_expenses_list'),
-    url(r'^$', index, name='mobile_home'),
+    url(r'^expenses/$', expenses, name='expenses'),
+    url(r'^expenses/add/$', expensesAdd, name='expenses_add'),
+    url(r'^expenses/list/$', expensesList, name='expenses_list'),
+    url(r'^$', index, name='home'),
 )

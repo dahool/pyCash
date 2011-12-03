@@ -132,8 +132,11 @@ else:
     if os.name == "posix":
         pass
     else:
-        os.environ['https_proxy']
-        os.environ['http_proxy']
+        try:
+            os.environ['https_proxy']
+            os.environ['http_proxy']
+        except:
+            pass
 
     LOG_FILE = '/tmp/pycash-debug-dev.log'
     MEDIA_ROOT = os.path.join(PROJECT_PATH,'pages','media')

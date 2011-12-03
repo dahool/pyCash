@@ -6,8 +6,10 @@ from cash.services import JsonParser, DateService, FinancialService
 from cash.services.RequestUtils import param_exist, sortMethod
 from django.db.models import Q
 from django.db import IntegrityError
-import _mysql_exceptions
-
+try:
+    import _mysql_exceptions
+except:
+    import cash.exceptions as _mysql_exceptions
 from django.db import connection
 
 def index(request):

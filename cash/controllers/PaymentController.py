@@ -8,7 +8,10 @@ from django.db.models import Q
 from django.db import IntegrityError, connection
 from decimal import *
 import string
-import _mysql_exceptions
+try:
+    import _mysql_exceptions
+except:
+    import cash.exceptions as _mysql_exceptions
 from django.utils import simplejson as json
 from cash.decorators import json_response
 

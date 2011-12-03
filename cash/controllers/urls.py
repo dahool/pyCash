@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
-    (r'^mobile/',include('cash.controllers.url.mobile')),
+    (r'^mobile/',include('cash.controllers.url.mobile', namespace='mobile')),
     (r'^paymentType/',include('cash.controllers.url.paymentType')),
     (r'^subCategory/',include('cash.controllers.url.subCategory')),
     (r'^tax/',include('cash.controllers.url.tax')),
