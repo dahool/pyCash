@@ -2,6 +2,11 @@ $(function() {
 
         // catch forms
     $(document).on("pageload", function() {
+        $('a[data-cache=false]').on('click', function() {
+            var $this = $(this);
+            $.mobile.changePage($this.attr('href'),{reloadPage: true, transition: "none"});
+        });
+
         $('[form-submit]').on("click",function() {
             frm = $(this).attr('form-submit');
             $.ajax({
@@ -9,17 +14,22 @@ $(function() {
                 url: $(frm).attr('action'),
                 data: $(frm).serialize(),
                 success: function(data) {
-                    alert(data.msg);
-                },
-                error: function(req, data) {
-                    alert(data);
+                    $(frm).simpledialog({
+                        'mode' : 'bool',
+                        'prompt' : data.msg,
+                        'useModal': true,
+                        'buttons' : {
+                          'OK': {
+                            click: function() {}
+                            }
+                        }
+                    })
                 },
                 dataType: "json"
             })        
             return false;
         }); 
     });
-    
 });
 /*
 $(document).live("pageinit", function( event, data ){

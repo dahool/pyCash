@@ -1,1 +1,0 @@
-ALTER TABLE `loan` ADD `instalments` INT( 11 ) NOT NULL DEFAULT '1';

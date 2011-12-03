@@ -2,8 +2,8 @@ from django.conf.urls.defaults import *
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.conf import settings
-from cash.models import PaymentType
-from cash.models import SubCategory
+from cash.models import PaymentType, SubCategory, Expense
+import datetime
 
 def index(request):
     return render_to_response('mobile/index.html', {"settings": settings})    
@@ -23,8 +23,12 @@ def expensesAdd(request):
                                                            "categoryList": cList})
 
 def expensesList(request):
-    return render_to_response('mobile/expenses_list.html', {"settings": settings})
-
+    q = Expense.objects.filter()
+    q = q.order_by("-date")
+    liste = q[0:5]
+    return render_to_response('mobile/expenses_list.html', {"settings": settings,
+                                                            "list": liste,
+                                                            "today": datetime.date.today()})
 
 urlpatterns = patterns('',
     url(r'^expenses/$', expenses, name='expenses'),

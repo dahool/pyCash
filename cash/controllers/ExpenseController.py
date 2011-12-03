@@ -185,52 +185,22 @@ def save_or_update(request):
     try:
         e = fromParams(req)
     except ValidationError, e:
-        data = '{"success":false, msg: "%s"}' % (e)
+        data = '{"success":false, "msg": "%s"}' % (e)
         return data
         
     if e.id:
-        data = '{"success":true, msg: "%s"}' % (_('Updated expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})
+        data = '{"success":true, "msg": "%s"}' % (_('Updated expense <b>%(text)s</b> for <b>%(date)s</b>') % {'text':e.text,'date':req['date']})
     else:
-        data = '{"success":true, msg: "%s"}' % (_('Created expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})
+        data = '{"success":true, "msg": "%s"}' % (_('Created expense <b>%(text)s</b> for <b>%(date)s</b>') % {'text':e.text,'date':req['date']})
         
     try:
         e.save()
     except _mysql_exceptions.Warning:
         pass
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)
+        data = '{"success":false, "msg": "%s"}' % (e1.args)
     
     return data
-
-#deprecated
-def save(request):
-    req = request.REQUEST
-    e = fromParams(req)
-
-    data = '{"success":true, msg: "%s"}' % (_('Created expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})    
-    try:
-        e.save()
-    except _mysql_exceptions.Warning:
-        pass
-    except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)
-    
-    return HttpResponse(data, mimetype='text/javascript;')
-
-#deprecated
-def update(request):
-    req = request.REQUEST
-    e = fromParams(req)
-
-    data = '{"success":true, msg: "%s"}' % (_('Updated expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})    
-    try:
-        e.save()
-    except _mysql_exceptions.Warning:
-        pass
-    except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)
-    
-    return HttpResponse(data, mimetype='text/javascript;')
 
 @json_response
 def delete(request):
@@ -239,5 +209,5 @@ def delete(request):
         e.delete()
         data = '{"success":true}'
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)   
+        data = '{"success":false, "msg": "%s"}' % (e1.args)   
     return data
