@@ -1,0 +1,39 @@
+{% extends "mobile/index.html" %}
+<!DOCTYPE HTML>
+<html>
+<head>
+{% block header %}
+{{ block.super }} 
+{% endblock %}
+<body>
+{% block content %}
+<div data-role="page">
+	<div data-role="header" data-theme="e">
+        <a href="{% url mobile:loans %}" data-icon="back" data-theme="b">Volver</a>
+        <h1>Préstamos</h1>
+        <a href="{% url mobile:loans %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Préstamo</a>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<ul data-role="listview" data-split-icon="plus" data-split-theme="e">
+			<li data-role="list-divider">{{person.name}}<span class="ui-li-count">Total: ${{total|floatformat:2}}</span></li>
+			{% for loan in list %}
+			<li>
+				<a href="{% url mobile:loans_payments loan.id %}">
+				<span class="ui-li-count" style="top: 15px;">{{loan.date}}</span>
+				<span class="ui-li-aside" style="margin-top: 30px; ">Resto: ${{loan.remain|floatformat:2}}</span>
+                <div>
+                    <h3>{{loan.reason}}</h3>            
+                    <p>Total: ${{loan.amount|floatformat:2}}</p>
+                </div></a>
+                <a href="#">Añadir pago</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</div><!-- /content -->
+</div><!-- /page -->
+{% endblock %}
+</body>
+</html>
+
+

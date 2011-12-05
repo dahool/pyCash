@@ -21,7 +21,7 @@ class PaymentType(models.Model):
     class Meta:
         db_table = "payment_type"
 
-class Category (models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=200, unique=True)
     
     def save(self):
@@ -98,12 +98,23 @@ class Person(models.Model):
     class Meta:
         db_table = "person"
 
+class LoanManager(models.Manager):
+    
+    def active(self):
+        return self.filter(remain__gt=0) 
+    
+    def fullpaid(self):
+        return self.filter(remain=0)
+    
 class Loan(models.Model):
-    person = models.ForeignKey(Person, db_column="person_id")
+    person = models.ForeignKey(Person, db_column="person_id", related_name="loans")
     amount = models.DecimalField(max_digits=19, decimal_places=2)
     date = models.DateField(db_index=True)
     reason = models.CharField(max_length=255)
     instalments = models.IntegerField()
+    remain = models.DecimalField(max_digits=19, decimal_places=2, db_index=True)
+    
+    objects = LoanManager()
     
     def save(self):
         self.name = capFirst(self.reason)
@@ -125,6 +136,7 @@ class Payment(models.Model):
     
     class Meta:
         db_table = "payment"
+        ordering = ("date",)
         
 class Card(models.Model):
     name = models.CharField(max_length=50, unique=True)

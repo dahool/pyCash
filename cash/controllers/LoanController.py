@@ -61,7 +61,7 @@ def list(request):
 def save(request):
     req = request.REQUEST
     p = Person(pk=req['person.id'])
-    l = Loan(person=p,amount=req['amount'],date=DateService.invert(req['date']), reason=req['reason'])
+    l = Loan(person=p,amount=req['amount'],date=DateService.invert(req['date']), reason=req['reason'], remain=req['amount'])
     
     if param_exist("instalments",req):
         l.instalments = req['instalments']

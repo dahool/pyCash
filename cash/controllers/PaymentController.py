@@ -40,6 +40,11 @@ def save(request):
     
     if checkPayment(l,req['amount'],None):
         data = '{"success":true}'
+        l.remain = unicode(float(l.remain) - float(p.amount))
+        try:
+            l.save()
+        except _mysql_exceptions.Warning:
+            pass        
         try:
             p.save()
         except _mysql_exceptions.Warning:
@@ -57,9 +62,17 @@ def update(request):
     l = Loan.objects.get(pk=req['loan.id'])
     p = Payment.objects.get(pk=req['id'])
     if checkPayment(l,req['amount'],p.amount):
+        diff = float(p.amount) - float(req['amount'])
+        l.remain = unicode(l.remain + diff)
+        
         p.amount=req['amount']
         p.date=DateService.invert(req['date'])
             
+        try:
+            l.save()
+        except _mysql_exceptions.Warning:
+            pass        
+
         data = '{"success":true}'
         try:
             p.save()
@@ -90,7 +103,10 @@ def checkPayment(loan, amount, oldAmount):
 
 @json_response
 def delete(request):
-    p = Payment(pk=request.REQUEST['id'])
+    p = Payment.objects.get(pk=request.REQUEST['id'])
+    l = p.loan
+    l.remain = unicode(float(l.remain) + float(p.amount))
+    l.save()
     try:
         p.delete()
         data = '{"success":true}'

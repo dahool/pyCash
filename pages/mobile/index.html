@@ -17,7 +17,7 @@
 {% loadScript "mobile/jquery-1.7.1.min.js" %}
 {% loadScript "mobile/functions.js" %}
 {% loadScript "mobile/remote.js" %}
-{% loadScript "mobile/expense.list.js" %}
+{% loadScript "mobile/swipe.list.js" %}
 {% loadScript "mobile/application.js" %}
 {% loadScript "mobile/jquery.mobile-1.0.min.js" %}
 {% loadScript "mobile/jquery.mobile.datebox.min.js" %}
@@ -42,7 +42,7 @@
                 <a href="{% url mobile:expenses %}">Gastos</a> 
 			</li>
 			<li>
-				<a href="loans.html">Prestamos</a> 
+				<a href="{% url mobile:loans %}">Préstamos</a> 
 			</li>
 		</ul>
 	</div><!-- /content -->

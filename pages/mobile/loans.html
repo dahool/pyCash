@@ -1,0 +1,32 @@
+{% extends "mobile/index.html" %}
+<!DOCTYPE HTML>
+<html>
+<head>
+{% block header %}
+{{ block.super }} 
+{% endblock %}
+<body>
+{% block content %}
+<div data-role="page">
+	<div data-role="header" data-theme="f">
+        <a href="{% url mobile:home %}" data-icon="home" data-iconpos="notext"></a>
+        <h1>Gastos</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider">Préstamos</li>
+			{% for person in list %}
+			<li>
+				<span class="ui-li-count">{{person.loans.active.count}}</span>
+                <a href="{% url mobile:loans_list person.id %}">{{person.name}}</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</div><!-- /content -->
+</div><!-- /page -->
+{% endblock %}
+</body>
+</html>
+
+
