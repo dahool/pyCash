@@ -5,6 +5,6 @@ urlpatterns = patterns('',
     (r'^list$', controller.list),
     url(r'^save$', controller.save, name="payment_save"),
     url(r'^update$', controller.update, name="payment_update"),
-    (r'^delete$', controller.delete),
+    url(r'^delete$', controller.delete, name="payment_delete"),
     (r'^calc$', controller.calcPayment)
 )

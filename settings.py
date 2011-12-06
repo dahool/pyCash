@@ -6,16 +6,16 @@ PROJECT_PATH = os.path.normpath(os.path.abspath(os.path.dirname(__file__)))
 
 isProd = os.path.exists(os.path.join(PROJECT_PATH,"prod.key"))
 
-VERSION = "0.8.3"
-APPLICATION = "pyCash"
+VERSION = "0.9.0"
+APPLICATION = "Cash Manager"
 
 #JQUERY_VERSION = '1.3.2'
 JQUERY_VERSION = '1.7.1'
 EXT_VERSION = '2.2.1'
 
 DEV = not isProd
-#DEBUG = DEV
-DEBUG = True
+DEBUG = DEV
+#DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 LOG_LEVEL = logging.DEBUG
  
@@ -118,6 +118,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'cash',
 )
+
+if isProd:
+    LOG_FILE = '/tmp/pycash-debug.log'
+else:
+    LOG_FILE = '/tmp/pycash-debug-dev.log'
 
 #if isProd:
 #    MEDIA_URL = 'http://py.banshee.sgt/media/'    

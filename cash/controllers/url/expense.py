@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^list$', controller.list, name="expenses_list"),
     url(r'^save$', controller.save_or_update, name="expenses_save"),
     url(r'^update$', controller.save_or_update, name="expenses_update"),
-    (r'^delete$', controller.delete),
+    url(r'^delete$', controller.delete, name="expenses_delete"),
     (r'^$', controller.index)
 )
 

@@ -14,13 +14,13 @@
         <a href="{% url mobile:expenses_list %}" data-icon="refresh" data-theme="a" data-cache="false">Actualizar</a>
 	</div><!-- /header -->
 
-	<div data-role="content" data-theme="a">	
+	<div data-role="content" data-theme="a" data-return="{% url mobile:expenses_list %}">	
         <ul data-role="listview">
             {% regroup list by date as exp_group %}
             {% for group in exp_group  %}
                 <li data-role="list-divider">{% ifequal today group.grouper %}Hoy{% else %}{{group.grouper}}{% endifequal %}</li>
                 {% for item in group.list %}
-                <li>
+                <li swipe-options='{"buttons": [{"style": "r", "value": "Borrar", "href": "javascript:confirmSingleAction(\"{% url expenses_delete %}\",\"{{item.id}}\")"},{"style": "e", "value": "Editar", "href": "algo"}]}'>
                     <div>
                         <h3>{{item.text}}</h3>            
                         <p>{{item.paymentType.name}}</p>

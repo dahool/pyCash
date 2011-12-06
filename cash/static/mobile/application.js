@@ -1,77 +1,69 @@
 $(function() {
-
         // catch forms
     $(document).on("pageload", function() {
         $('a[data-cache=false]').on('click', function() {
             var $this = $(this);
             $.mobile.changePage($this.attr('href'),{reloadPage: true, transition: "none"});
         });
-
         $('[form-submit]').on("click",function() {
             var frm = $(this).attr('form-submit');
             var rte = false;
             if ($(this).attr('return')) {
             	rte = $(this).attr('return');
             }
-            $.ajax({
-                type: 'POST',
-                url: $(frm).attr('action'),
-                data: $(frm).serialize(),
-                success: function(data) {
-                	if (data.msg) {
-                        $(frm).simpledialog({
-                            'mode' : 'bool',
-                            'prompt' : data.msg,
-                            'useModal': true,
-                            'buttons' : {
-                              'OK': {
-                                click: function() {}
-                                }
-                            }
-                        });
-                	}
-                	if (data.success) {
-                    	if (rte) {
-                    		$.mobile.changePage(rte);
-                    	}
-                	}
-                },
-                dataType: "json"
-            })        
+            doPostAction($(frm).attr('action'), $(frm).serialize(), frm, rte);
             return false;
         }); 
     });
 });
-/*
-$(document).live("pageinit", function( event, data ){
-    if ($("#ptype").length > 0 && $("#ptype > option").size() == 0) {
-    	console.log("1");
-        if (paymentTypes.rows) {
-        	console.log("2");
-            var ptype = "";
-            $.each(paymentTypes.rows, function(index, value) { 
-                ptype += "<option value='"+value.id+"'>"+value.name+"</option>";
-            });
-            $("#ptype").html(ptype);
+
+function doPostAction(url, data, elem, rte) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: data,
+        success: function(data) {
+        	if (data.msg) {
+                $(elem).simpledialog({
+                    'mode' : 'bool',
+                    'prompt' : data.msg,
+                    'useModal': true,
+                    'buttons' : {
+                      'OK': {
+                        click: function() {}
+                        }
+                    }
+                });
+        	}
+        	if (data.success) {
+            	if (rte) {
+            		$.mobile.changePage(rte, {reloadPage: true});
+            	}
+        	}
+        },
+        dataType: "json"
+    });
+}
+
+function confirmSingleAction(url, id) {
+	var $elem = $('div[data-role="content"]:visible');
+	var rte = $elem.attr("data-return");
+    $elem.simpledialog({
+        'mode' : 'bool',
+        'prompt' : "¿Confirma eliminación?",
+        'useModal': true,
+        'buttons' : {
+          'Si': {
+            click: function() {
+            	doPostAction(url, {"id": id}, $elem, rte);
+            },
+    		icon: "delete",
+    		theme: "c"
+          },
+    	  'No': {
+    		click: function() {
+    	    },
+    	  }
         }
-    }
-    if ($("#category").length > 0 && $("#category > option").size() == 0) {
-        if (categoryList.rows) {
-            var clist = "<option data-placeholder='true'>Categor&iacute;a</option>";
-            var l = 0;
-            $.each(categoryList.rows, function(index, value) { 
-                if (l != value.categoryId) {
-                    clist += "<optgroup label='"+value.category+"'>";
-                    if (l == 0) l = value.categoryId;
-                }
-                clist += "<option value='"+value.id+"'>"+value.name+"</option>";
-                if (l != value.categoryId) {
-                    clist += "</optgroup>";
-                    l = value.categoryId;
-                }
-            });
-            $("#category").html(clist);
-        }
-    }    
-});
-*/
+    });	
+}

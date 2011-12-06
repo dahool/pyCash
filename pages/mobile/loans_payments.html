@@ -14,11 +14,11 @@
         <a href="{% url mobile:loans_payments_add loan.id %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Pago</a>
 	</div><!-- /header -->
 
-	<div data-role="content" data-theme="a">	
+	<div data-role="content" data-theme="a" data-return="{% url mobile:loans_payments loan.id %}">
 		<ul data-role="listview">
 			<li data-role="list-divider">Pagos: {{loan.reason}}</li>
 			{% for payment in loan.payment_set.all %}
-			<li>
+			<li swipe-options='{"buttons": [{"style": "r", "value": "Borrar", "href": "javascript:confirmSingleAction(\"{% url payment_delete %}\",\"{{payment.id}}\")"},{"style": "e", "value": "Editar", "href": "algo"}]}'>
 				<h3>{{payment.date}}</h3>
 				<span class="ui-li-aside">${{payment.amount|floatformat:2}}</span>
 			</li>
