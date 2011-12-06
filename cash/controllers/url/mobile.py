@@ -40,23 +40,38 @@ def loansHome(request):
 def loans_list(request, id):
     p = Person.objects.get(pk=id)
     llist = p.loans.active()
-    total = p.loans.active().aggregate(total=Sum('remain'))
+    if (llist.count() > 0):
+        total = p.loans.active().aggregate(total=Sum('remain'))['total']
+    else:
+        total = 0
     return render_to_response('mobile/loans_list.html', {"settings": settings,
                                                             "person": p,
                                                             "list": llist.order_by("date"),
-                                                            "total": total['total']})
+                                                            "total": total})
 
 def loans_payments(request, id):
     l = Loan.objects.get(pk=id)
     return render_to_response('mobile/loans_payments.html', {"settings": settings,
                                                             "loan": l})
-    
+
+def loans_payments_add(request, id):
+    l = Loan.objects.get(pk=id)
+    return render_to_response('mobile/loans_payments_add.html', {"settings": settings,
+                                                            "loan": l})
+
+def loans_add(request, id):
+    p = Person.objects.get(pk=id)
+    return render_to_response('mobile/loans_add.html', {"settings": settings,
+                                                            "person": p})
+   
 urlpatterns = patterns('',
     url(r'^expenses/$', expenses, name='expenses'),
     url(r'^expenses/add/$', expensesAdd, name='expenses_add'),
     url(r'^expenses/list/$', expensesList, name='expenses_list'),
     url(r'^loans/$', loansHome, name='loans'),
+    url(r'^loans/add/(?P<id>[\d]+)/$', loans_add, name='loans_add'),
     url(r'^loans/list/(?P<id>[\d]+)/$', loans_list, name='loans_list'),
     url(r'^loans/payments/(?P<id>[\d]+)/$', loans_payments, name='loans_payments'),
+    url(r'^loans/payments/(?P<id>[\d]+)/add/$', loans_payments_add, name='loans_payments_add'),
     url(r'^$', index, name='home'),
 )

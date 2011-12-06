@@ -3,8 +3,8 @@ from cash.controllers import LoanController as controller
 
 urlpatterns = patterns('',
     (r'^list$', controller.list),
-    (r'^save$', controller.save),
-    (r'^update$', controller.update),
-    (r'^delete$', controller.delete),
+    url(r'^save$', controller.save_or_update, name="loan_save"),
+    (r'^update$', controller.save_or_update),
+    url(r'^delete$', controller.delete, name="loan_delete"),
     (r'^$', controller.index)
 )

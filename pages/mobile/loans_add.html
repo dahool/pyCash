@@ -1,0 +1,43 @@
+{% extends "mobile/index.html" %}
+<!DOCTYPE HTML>
+<html>
+<head>
+{% block header %}
+{{ block.super }} 
+{% endblock %}
+<body>
+{% block content %}
+<div data-role="page">
+	<div data-role="header" data-theme="e">
+        <a href="{% url mobile:loans_list person.id %}" data-icon="back" data-theme="b">Cancelar</a>
+        <h1>{{loan.person.name}}</h1>
+        <a data-icon="check" data-theme="c" form-submit="#form-add" return="{% url mobile:loans_list person.id %}">Guardar</a>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+        <form id="form-add" action="{% url loan_save %}">
+        	<input type="hidden" name="person.id" value="{{person.id}}"/>
+            <ul data-role="listview" data-inset="true">
+                <li>
+                <div data-role="fieldcontain">
+                    <label for="date">Fecha:</label>
+                    <input type="date" data-role="datebox" value="{% now "d/m/Y" %}" name="date" id="date" data-options='{"buttonTheme": "b", "disableManualInput": true}' />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="amount">Monto:</label>
+                    <input type="number" name="amount" id="amount"/>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="text">Motivo:</label>
+                    <input type="text" name="reason" maxlength="" id="text"/>
+                </div>                
+                </li>
+            </ul>
+        </form>
+	</div><!-- /content -->
+</div><!-- /page -->
+{% endblock %}
+</body>
+</html>
+
+

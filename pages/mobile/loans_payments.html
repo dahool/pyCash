@@ -8,18 +8,19 @@
 <body>
 {% block content %}
 <div data-role="page" id="swipemenu_payments">
-	<div data-role="header" data-theme="e">
+	<div data-role="header" data-theme="b">
         <a href="{% url mobile:loans_list loan.person.id %}" data-icon="back" data-theme="b">Volver</a>
-        <h1>Pagos - {{loan.person.name}}</h1>
-        <a href="{% url mobile:loans %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Pago</a>
+        <h1>{{loan.person.name}}</h1>
+        <a href="{% url mobile:loans_payments_add loan.id %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Pago</a>
 	</div><!-- /header -->
 
-	<div data-role="content">	
+	<div data-role="content" data-theme="a">	
 		<ul data-role="listview">
-			<li data-role="list-divider">{{loan.reason}}</li>
+			<li data-role="list-divider">Pagos: {{loan.reason}}</li>
 			{% for payment in loan.payment_set.all %}
 			<li>
-				<h3>{{payment.date}} - ${{payment.amount|floatformat:2}}</h3>
+				<h3>{{payment.date}}</h3>
+				<span class="ui-li-aside">${{payment.amount|floatformat:2}}</span>
 			</li>
 			{% empty %}
 			<li>Sin pagos registrados</li>

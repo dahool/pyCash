@@ -31,7 +31,8 @@
 </head>
 <body>
 {% block content %}
-<div data-role="page">
+<div data-role="page" id="main">
+
 	<div data-role="header">
 		<h1>Cash for Mobile</h1>
 	</div><!-- /header -->
@@ -39,7 +40,7 @@
 	<div data-role="content">	
 		<ul data-role="listview" data-inset="true" >
 			<li>
-                <a href="{% url mobile:expenses %}">Gastos</a> 
+                <a href="#expenses">Gastos</a> 
 			</li>
 			<li>
 				<a href="{% url mobile:loans %}">Préstamos</a> 
@@ -48,6 +49,26 @@
 	</div><!-- /content -->
 
 </div><!-- /page -->
+
+<div data-role="page" id="expenses">
+	<div data-role="header" data-theme="f">
+        <a href="{% url mobile:home %}" data-icon="home" data-iconpos="notext"></a>
+        <h1>Gastos</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider">Gastos</li>
+			<li>
+                <a href="{% url mobile:expenses_add %}">Nuevo</a>
+			</li>
+			<li>
+				<a href="{% url mobile:expenses_list %}">Listado</a>
+			</li>
+		</ul>
+	</div><!-- /content -->
+</div><!-- /page -->
+
 {% endblock %}
 </body>
 </html>

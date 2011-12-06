@@ -8,22 +8,33 @@ $(function() {
         });
 
         $('[form-submit]').on("click",function() {
-            frm = $(this).attr('form-submit');
+            var frm = $(this).attr('form-submit');
+            var rte = false;
+            if ($(this).attr('return')) {
+            	rte = $(this).attr('return');
+            }
             $.ajax({
                 type: 'POST',
                 url: $(frm).attr('action'),
                 data: $(frm).serialize(),
                 success: function(data) {
-                    $(frm).simpledialog({
-                        'mode' : 'bool',
-                        'prompt' : data.msg,
-                        'useModal': true,
-                        'buttons' : {
-                          'OK': {
-                            click: function() {}
+                	if (data.msg) {
+                        $(frm).simpledialog({
+                            'mode' : 'bool',
+                            'prompt' : data.msg,
+                            'useModal': true,
+                            'buttons' : {
+                              'OK': {
+                                click: function() {}
+                                }
                             }
-                        }
-                    })
+                        });
+                	}
+                	if (data.success) {
+                    	if (rte) {
+                    		$.mobile.changePage(rte);
+                    	}
+                	}
                 },
                 dataType: "json"
             })        

@@ -11,7 +11,7 @@
 	<div data-role="header" data-theme="e">
         <a href="{% url mobile:loans %}" data-icon="back" data-theme="b">Volver</a>
         <h1>Préstamos</h1>
-        <a href="{% url mobile:loans %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Préstamo</a>
+        <a href="{% url mobile:loans_add person.id %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Préstamo</a>
 	</div><!-- /header -->
 
 	<div data-role="content">	
@@ -26,7 +26,7 @@
                     <h3>{{loan.reason}}</h3>            
                     <p>Total: ${{loan.amount|floatformat:2}}</p>
                 </div></a>
-                <a href="#">Añadir pago</a>
+                <a href="{% url mobile:loans_payments_add loan.id %}">Añadir pago</a>
 			</li>
 			{% endfor %}
 		</ul>

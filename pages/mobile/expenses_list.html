@@ -23,7 +23,8 @@
                 <li>
                     <div>
                         <h3>{{item.text}}</h3>            
-                        <p>{{item.paymentType.name}}, ${{item.amount|floatformat:2}}</p>
+                        <p>{{item.paymentType.name}}</p>
+                        <span class="ui-li-aside">${{item.amount|floatformat:2}}</span>
                     </div>
                 </li>
                 {% endfor %}

@@ -3,8 +3,8 @@ from cash.controllers import PaymentController as controller
 
 urlpatterns = patterns('',
     (r'^list$', controller.list),
-    (r'^save$', controller.save),
-    (r'^update$', controller.update),
+    url(r'^save$', controller.save, name="payment_save"),
+    url(r'^update$', controller.update, name="payment_update"),
     (r'^delete$', controller.delete),
     (r'^calc$', controller.calcPayment)
 )

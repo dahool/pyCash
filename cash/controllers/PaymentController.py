@@ -50,9 +50,9 @@ def save(request):
         except _mysql_exceptions.Warning:
             pass        
         except Exception, e1:
-            data = '{"success":false, msg: "%s"}' % (e1.args)
+            data = '{"success":false, "msg": "%s"}' % (e1.args)
     else:
-        data = '{"success":false, msg: "%s"}' % (_('The entered amount is greater than the amount owned'))
+        data = '{"success":false, "msg": "%s"}' % (_('The entered amount is greater than the amount owned'))
           
     return data
     
@@ -79,9 +79,9 @@ def update(request):
         except _mysql_exceptions.Warning:
             pass        
         except Exception, e1:
-            data = '{"success":false, msg: "%s"}' % (e1.args)
+            data = '{"success":false, "msg": "%s"}' % (e1.args)
     else:
-        data = '{"success":false, msg: "%s"}' % (_('The entered amount is greater than the amount owned'))
+        data = '{"success":false, "msg": "%s"}' % (_('The entered amount is greater than the amount owned'))
                         
     return data
 
@@ -111,7 +111,7 @@ def delete(request):
         p.delete()
         data = '{"success":true}'
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)     
+        data = '{"success":false, "msg": "%s"}' % (e1.args)     
     return data
 
 @json_response

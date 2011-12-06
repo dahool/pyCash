@@ -10,10 +10,12 @@ try:
     import _mysql_exceptions
 except:
     import cash.exceptions as _mysql_exceptions
+from cash.decorators import json_response
 
 def index(request):
     return render_to_response('cash/loan/index.html', {})
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = Loan.objects.filter()
@@ -56,7 +58,7 @@ def list(request):
                         'personId': exp.person.id, 'balance': sum, 'partial': partial})
     
     data = '{"total": %s, "rows": %s}' % (len(res), JsonParser.parse(res[start:limit]))
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
 def save(request):
     req = request.REQUEST
@@ -74,9 +76,36 @@ def save(request):
     except _mysql_exceptions.Warning:
         pass        
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)  
+        data = '{"success":false, "msg": "%s"}' % (e1.args)  
     return HttpResponse(data, mimetype='text/javascript;')
     
+
+def from_request(request):
+    req = request.REQUEST
+    p = Person(pk=req['person.id'])
+    l = Loan(person=p,amount=req['amount'],date=DateService.invert(req['date']), reason=req['reason'], remain=req['amount'])
+    if param_exist("id",req):
+        l.pk = req['id']
+
+    if param_exist("instalments",req):
+        l.instalments = req['instalments']
+    else:
+        l.instalments = 1
+    
+    return l
+
+@json_response
+def save_or_update(request):
+    l = from_request(request)
+    data = '{"success":true}'
+    try:
+        l.save()
+    except _mysql_exceptions.Warning:
+        pass        
+    except Exception, e1:
+        data = '{"success":false, "msg": "%s"}' % (e1.args)    
+    return data
+
 def update(request):
     req = request.REQUEST
     p = Person(pk=req['person.id'])
@@ -96,6 +125,7 @@ def update(request):
         data = '{"success":false, msg: "%s"}' % (e1.args)    
     return HttpResponse(data, mimetype='text/javascript;')
 
+@json_response
 def delete(request):
     l = Loan(pk=request.REQUEST['id'])
     try:
@@ -103,4 +133,4 @@ def delete(request):
         data = '{"success":true}'
     except Exception, e1:
         data = '{"success":false, msg: "%s"}' % (e1.args)     
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
