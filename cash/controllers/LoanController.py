@@ -1,3 +1,23 @@
+# -*- coding: utf-8 -*-
+"""Copyright (c) 2011 Sergio Gabriel Teves
+All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+from common.view.decorators import render
+
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -12,8 +32,9 @@ except:
     import cash.exceptions as _mysql_exceptions
 from cash.decorators import json_response
 
+@render('cash/loan/index.html')
 def index(request):
-    return render_to_response('cash/loan/index.html', {})
+    return {}
 
 @json_response
 def list(request):
@@ -60,6 +81,7 @@ def list(request):
     data = '{"total": %s, "rows": %s}' % (len(res), JsonParser.parse(res[start:limit]))
     return data
 
+@json_response
 def save(request):
     req = request.REQUEST
     p = Person(pk=req['person.id'])
@@ -77,7 +99,7 @@ def save(request):
         pass        
     except Exception, e1:
         data = '{"success":false, "msg": "%s"}' % (e1.args)  
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
     
 
 def from_request(request):
@@ -106,6 +128,7 @@ def save_or_update(request):
         data = '{"success":false, "msg": "%s"}' % (e1.args)    
     return data
 
+@json_response
 def update(request):
     req = request.REQUEST
     p = Person(pk=req['person.id'])
@@ -122,8 +145,8 @@ def update(request):
     except _mysql_exceptions.Warning:
         pass        
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)    
-    return HttpResponse(data, mimetype='text/javascript;')
+        data = '{"success":false, "msg": "%s"}' % (e1.args)    
+    return data
 
 @json_response
 def delete(request):
@@ -132,5 +155,5 @@ def delete(request):
         l.delete()
         data = '{"success":true}'
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)     
+        data = '{"success":false, "msg": "%s"}' % (e1.args)     
     return data

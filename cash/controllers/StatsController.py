@@ -1,3 +1,23 @@
+# -*- coding: utf-8 -*-
+"""Copyright (c) 2011 Sergio Gabriel Teves
+All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+from common.view.decorators import render
+
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -11,10 +31,13 @@ try:
 except:
     import cash.exceptions as _mysql_exceptions
 from django.db import connection
+from cash.decorators import json_response
 
+@render('cash/stats/index.html')
 def index(request):
-    return render_to_response('cash/stats/index.html', {})
+    return {}
 
+@json_response
 def calc(request):
     req = request.REQUEST
     if param_exist("date",req):
@@ -46,8 +69,9 @@ def calc(request):
 
     avg = sum / days
     data = '{"data":{"total":%s,"avg":%s}}' % (sum,avg)
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data
 
+@json_response
 def monthCalc(request):
     req = request.REQUEST
     if param_exist("date",req):
@@ -75,8 +99,9 @@ def monthCalc(request):
         list.append('[%d,%s]' % (int(DateService.toLong(exp['date'])),exp['sum']))
     
     data = "[" + ",".join(list) + "]"
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data 
 
+@json_response
 def sixMonthCalc(request):
     req = request.REQUEST
     if param_exist("date",req):
@@ -100,16 +125,7 @@ def sixMonthCalc(request):
     
     cursor = connection.cursor()
     cursor.execute(query)
-#    q = Expense.objects.extra(select={'sum': 'sum(amount)'}).values('sum','date')
-#    q = q.filter(date__gte=fromDate, date__lte=toDate).order_by('date')
-#    if param_exist("subC",req):
-#        q = q.filter(subCategory=req['subC'])
-#    elif param_exist("cat",req):
-#        c = SubCategory.objects.filter(category=req['cat'])
-#        q = q.filter(subCategory__in=c)
-#    if param_exist("payT",req):
-#        q = q.filter(paymentType=req['payT'])
-#    q.query.group_by = ['month(date)']
+
     list = []
     for exp in cursor.fetchall():
         sum, date = exp
@@ -121,8 +137,9 @@ def sixMonthCalc(request):
         list.append({'date': date, 'expense': sum, 'income': val})
 
     data = '{"rows": %s}' % (JsonParser.parse(list))
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = Expense.objects.filter()
@@ -156,7 +173,7 @@ def list(request):
                     'subCategoryId': exp.subCategory.id})
 
     data = '{"total": %s, "rows": %s}' % (q.count(), JsonParser.parse(res))
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data
 
 def fromParams(req):
     s = SubCategory.objects.get(pk=req['subCategory.id'])
@@ -178,40 +195,32 @@ def fromParams(req):
     e.paymentType=p
     return e
     
+@json_response    
 def save(request):
     req = request.REQUEST
     e = fromParams(req)
 
-    data = '{"success":true, msg: "%s"}' % (_('Created expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})    
+    data = '{"success":true, "msg": "%s"}' % (_('Created expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})    
     try:
         e.save()
     except _mysql_exceptions.Warning:
         pass
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)
+        data = '{"success":false, "msg": "%s"}' % (e1.args)
     
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def update(request):
     req = request.REQUEST
     e = fromParams(req)
 
-    data = '{"success":true, msg: "%s"}' % (_('Updated expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})    
+    data = '{"success":true, "msg": "%s"}' % (_('Updated expense <b>%(text)s</b> of <b>%(date)s</b>') % {'text':e.text,'date':req['date']})    
     try:
         e.save()
     except _mysql_exceptions.Warning:
         pass
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)
+        data = '{"success":false, "msg": "%s"}' % (e1.args)
     
-    return HttpResponse(data, mimetype='text/javascript;')
-
-# TODO
-def delete(request):
-    e = Expense(pk=request.REQUEST['id'])
-    try:
-        e.delete()
-        data = '{"success":true}'
-    except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)   
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data

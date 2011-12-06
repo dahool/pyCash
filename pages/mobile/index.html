@@ -1,4 +1,3 @@
-{% load media_load %}
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -7,26 +6,20 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-{% loadMedia "mobile/jquery.mobile-1.0.min.css" %}
-{% loadMedia "mobile/mobile.extra.css" %}
-{% loadMedia "mobile/jquery.mobile.datebox.min.css" %}
-{% loadMedia "mobile/jquery.mobile.simpledialog.min.css" %}
-{% loadMedia "mobile/swipe.css" %}
-{% loadMedia "mobile/default.css" %}
-{% loadScript "js/dutils.js" %}
-{% loadScript "mobile/jquery-1.7.1.min.js" %}
-{% loadScript "mobile/functions.js" %}
-{% loadScript "mobile/remote.js" %}
-{% loadScript "mobile/swipe.list.js" %}
-{% loadScript "mobile/application.js" %}
-{% loadScript "mobile/jquery.mobile-1.0.min.js" %}
-{% loadScript "mobile/jquery.mobile.datebox.min.js" %}
-{% loadScript "mobile/jquery.mobile.datebox.i8n.es.js" %}
-{% loadScript "mobile/jquery.mobile.simpledialog.min.js" %}
-<script type="text/javascript">
-    dutils.conf.urls.payment_type_list = "{% url payment_type_list %}";
-    dutils.conf.urls.subcategory_list = "{% url subcategory_list %}";
-</script>
+<link media="screen" href="{{ STATIC_URL }}mobile/jquery.mobile-1.0.min.css" type="text/css" rel="stylesheet" />
+<link media="screen" href="{{ STATIC_URL }}mobile/mobile.extra.css" type="text/css" rel="stylesheet" />
+<link media="screen" href="{{ STATIC_URL }}mobile/jquery.mobile.datebox.min.css" type="text/css" rel="stylesheet" />
+<link media="screen" href="{{ STATIC_URL }}mobile/jquery.mobile.simpledialog.min.css" type="text/css" rel="stylesheet" />
+<link media="screen" href="{{ STATIC_URL }}mobile/swipe.css" type="text/css" rel="stylesheet" />
+<link media="screen" href="{{ STATIC_URL }}mobile/default.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="{{ STATIC_URL }}mobile/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}mobile/functions.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}mobile/swipe.list.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}mobile/application.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}mobile/jquery.mobile-1.0.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}mobile/jquery.mobile.datebox.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery.mobile.datebox.i8n.es.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery.mobile.simpledialog.min.js"></script>
 {% endblock %}
 </head>
 <body>

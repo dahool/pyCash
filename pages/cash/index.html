@@ -16,14 +16,14 @@
 	{% loadExtUx "Ext.ux.TabCloseMenu" %}
 	{% loadExtUx "Ext.ux.form.DateFieldTrigger" %}
 	{% loadExtUx "Ext.ux.RefreshToolbar" %}
-	{% loadExtUx "statusbar/StatusBar" %}
+	<!--  {% loadExtUx "statusbar/StatusBar" %} -->
 	{% loadScript "js/datefix.js" %}
 	{% loadScript "js/application.js" %}
 	{% loadScript "js/main.js" %}
 	{% loadScript "js/stores.js" %}
 	{% loadScript "js/menu.js" %}
 	<script type="text/javascript">
-		Ext.BLANK_IMAGE_URL = "{{settings.MEDIA_URL}}{{settings.EXT_LOCATION}}resources/images/default/s.gif";
+		Ext.BLANK_IMAGE_URL = "{{ STATIC_URL }}{{settings.EXT_LOCATION}}resources/images/default/s.gif";
 
 		Ext.onReady(function(){
 			Ext.QuickTips.init();

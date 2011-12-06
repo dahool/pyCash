@@ -1,3 +1,23 @@
+# -*- coding: utf-8 -*-
+"""Copyright (c) 2011 Sergio Gabriel Teves
+All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+from common.view.decorators import render
+
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -15,13 +35,17 @@ from django.db import transaction
 from django.conf import settings
 from cash.services.Utils import show_sql, get_logger
 import sys
+from cash.decorators import json_response
  
+@render('cash/tax/index.html')
 def index(request):
-    return render_to_response('cash/tax/index.html', {})
+    return {}
 
+@render('cash/tax/upcoming.html')
 def upcoming(request):
-    return render_to_response('cash/tax/upcoming.html', {})
+    return {}
 
+@json_response
 def upcomingList(request):
     req = request.REQUEST
     limit = (datetime.datetime.now() + datetime.timedelta(days=5))
@@ -33,8 +57,9 @@ def upcomingList(request):
                     'amount': it.amount, 'nextExpire': it.nextExpire})
 
     data = '{"total": %s, "rows": %s}' % (q.count(), JsonParser.parse(res))
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data 
 
+@json_response
 def list(request):
     req = request.REQUEST
     q = Tax.objects.filter()
@@ -56,21 +81,22 @@ def list(request):
                     'paymentTypeId': it.paymentType.id, 'account': it.account})
 
     data = '{"total": %s, "rows": %s}' % (q.count(), JsonParser.parse(res))
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def save(request):
     req = request.REQUEST
     e = fromParams(req)
 
     safe = True
-    data = '{"success":true, msg: "%s"}' % (_('Created Tax for Service <b>%(service)s</b>') % {'service':e.service})    
+    data = '{"success":true, "msg": "%s"}' % (_('Created Tax for Service <b>%(service)s</b>') % {'service':e.service})    
     try:
         elem = e.save()
     except _mysql_exceptions.Warning:
         pass
     except Exception, e1:
         safe = False
-        data = '{"success":false, msg: "%s"}' % (e1.args)
+        data = '{"success":false, "msg": "%s"}' % (e1.args)
         
     if safe:
         if settings.USE_GOOGLE_CAL:
@@ -85,24 +111,25 @@ def save(request):
                 t.gcalId = ev.get_id()
                 t.save()
             except Exception, e1:
-                data = '{"success":true, msg: "%s"}' % (e1.args)
+                data = '{"success":true, "msg": "%s"}' % (e1.args)
             
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
+@json_response
 def update(request):
     req = request.REQUEST
     o = Tax.objects.get(pk=req['id'])
     e = fromParams(req)
 
     safe = True
-    data = '{"success":true, msg: "%s"}' % (_('Updated Service <b>%(service)s</b>') % {'service':e.service})    
+    data = '{"success":true, "msg": "%s"}' % (_('Updated Service <b>%(service)s</b>') % {'service':e.service})    
     try:
         e.save()
     except _mysql_exceptions.Warning:
         pass
     except Exception, e1:
         safe = False
-        data = '{"success":false, msg: "%s"}' % (e1.args)
+        data = '{"success":false, "msg": "%s"}' % (e1.args)
     
     if safe:
         if settings.USE_GOOGLE_CAL:
@@ -110,10 +137,9 @@ def update(request):
             try:
                 update_calendar(req['id'])
             except Exception, e1:
-                #data = '{"success":true, msg: "%s"}' % (e1.args)
                 pass
                     
-    return HttpResponse(data, mimetype='text/javascript;')
+    return data
 
 @transaction.autocommit
 def update_calendar(id):
@@ -146,6 +172,7 @@ def update_calendar(id):
     finally:
         tax.save()
         
+@json_response        
 def delete(request):
     e = Tax.objects.get(pk=request.REQUEST['id'])
     try:
@@ -161,7 +188,7 @@ def delete(request):
         e.delete()
         data = '{"success":true}'
     except Exception, e1:
-        data = '{"success":false, msg: "%s"}' % (e1.args)
+        data = '{"success":false, "msg": "%s"}' % (e1.args)
         
     return HttpResponse(data, mimetype='text/javascript;')
     
@@ -186,6 +213,7 @@ def fromParams(req):
     e.paymentType=p
     return e
 
+@json_response
 @transaction.commit_manually
 def pay(request):
     req = request.REQUEST
@@ -217,7 +245,7 @@ def pay(request):
         except Exception, e1:
             safe = False
             transaction.rollback()
-            data = '{"success":false, msg: "%s"}' % (e1.args)
+            data = '{"success":false, "msg": "%s"}' % (e1.args)
         
         if safe:
             try:
@@ -228,7 +256,7 @@ def pay(request):
             except Exception, e2:
                 safe = False
                 transaction.rollback()
-                data = '{"success":false, msg: "%s"}' % (e2.args)
+                data = '{"success":false, "msg": "%s"}' % (e2.args)
 
         if safe:
             if settings.USE_GOOGLE_CAL:
@@ -236,9 +264,8 @@ def pay(request):
                 try:
                     update_calendar(req['id'])
                 except Exception, e1:
-                    #data = '{"success": true, msg: "%s"}' % (e1.args)
                     pass        
         
-    return HttpResponse(data, mimetype='text/javascript;') 
+    return data 
 
     

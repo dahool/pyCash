@@ -1,3 +1,18 @@
-#Mon Dec 05 14:38:46 ART 2011
+#Tue Dec 06 11:03:01 ART 2011
 eclipse.preferences.version=1
+encoding//cash/controllers/CardController.py=utf-8
+encoding//cash/controllers/CardDatesController.py=utf-8
+encoding//cash/controllers/CardExpenseController.py=utf-8
+encoding//cash/controllers/CategoryController.py=utf-8
+encoding//cash/controllers/DebitsController.py=utf-8
+encoding//cash/controllers/ExpenseController.py=utf-8
+encoding//cash/controllers/IncomeController.py=utf-8
+encoding//cash/controllers/LoanController.py=utf-8
+encoding//cash/controllers/PaymentTypeController.py=utf-8
+encoding//cash/controllers/PersonController.py=utf-8
+encoding//cash/controllers/StatsController.py=utf-8
+encoding//cash/controllers/SubCategoryController.py=utf-8
+encoding//cash/controllers/TaxController.py=utf-8
+encoding//cash/controllers/url/mobile.py=utf-8
 encoding//cash/management/commands/updateloans.py=utf-8
+encoding//cash/views.py=utf-8
