@@ -17,7 +17,7 @@ def parse(str):
 def invert(date):
     if isinstance(date,basestring):
         date = parse(date)
-    elif isinstance(date,datetime.date):
+    elif isinstance(date,datetime.date) or isinstance(date,datetime.datetime):
         date = date.timetuple()
         
     return time.strftime("%Y-%m-%d",date)

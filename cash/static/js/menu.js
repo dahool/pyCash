@@ -20,6 +20,42 @@ var systemMenu = new Ext.menu.Menu({
 		handler : function() {
 			loadPage('card','card-panel');
 		}
+	},{
+		text: _('Syncronize'),
+		iconCls: 'menu-sync',
+		menu: {
+			items: [
+			     {
+					text: _('Expenses'),
+					iconCls: 'menu-item',
+					handler: function() {
+						s = new SyncManager();
+						s.syncExpenses();
+					}
+				},{
+					text: _('Category'),
+					iconCls: 'menu-item',
+					handler: function() {
+						s = new SyncManager();
+						s.syncCategory();
+					}
+				},{
+					text: _('Payment Type'),
+					iconCls: 'menu-item',
+					handler: function() {
+						s = new SyncManager();
+						s.syncPaymentType();
+				}
+			},			
+			]
+		}
+	},
+	{
+		text : _('Logout'),
+		iconCls : 'menu-logout',
+		handler : function() {
+			window.location="/logout";
+		}
 	}	
 	]
 });

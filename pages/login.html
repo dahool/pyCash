@@ -1,0 +1,48 @@
+{% load media_load %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>-</title>
+{% loadStyle "login-box.css" %}
+{% loadScript "js/jquery/jquery-1.4.1.min.js" %}
+<script type="text/javascript">
+$(document).ready(
+	    function() {
+	    	$('#id_password').bind('keypress', function(e) {
+	            if(e.keyCode==13){
+	                $(".submit").click();
+	            }
+	        });
+		    $(".submit").click( function(){
+		        form = $(this).parent("form");
+		        form.submit();
+		    });
+	    }
+)
+</script>
+</head>
+<body>
+<div style="padding: 100px 0 0 250px;">
+<div id="login-box">
+<form id="login" method="post" accept-charset="utf-8">
+{% csrf_token %}
+<H2>Login</H2>
+<br />
+{{ form.non_field_errors }}
+<br />
+<div id="login-box-name" style="margin-top:20px;">Username:</div><div id="login-box-field" style="margin-top:20px;"><input id="id_username" name="username" class="form-login" title="Username" value="" size="30" maxlength="2048" /></div>
+<div id="login-box-name">Password:</div><div id="login-box-field"><input id="id_password" name="password" type="password" class="form-login" title="Password" value="" size="30" maxlength="2048" /></div>
+<br />
+<span class="login-box-options">
+<input type="checkbox" name="remember" value="1"> Remember Me <!-- <a href="#" style="margin-left:30px;">Forgot password?</a>
+ -->
+</span>
+<br />
+<br />
+<a href="#" class="submit"><img src="{%mediaurl "images/login-btn.png"%}" width="103" height="42" style="margin-left:90px;" /></a>
+</form>
+</div>
+</div>
+</body>
+</html>

@@ -59,6 +59,9 @@
 .menu-system {
 	background-image:url(../images/icons/cog.png) !important;
 }
+.menu-logout {
+    background-image:url(../images/icons/cancel.png) !important;
+}
 .menu-item {
 	background-image:url(../images/icons/database_gear.png) !important;
 }

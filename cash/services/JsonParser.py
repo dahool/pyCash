@@ -31,7 +31,6 @@ def parse(data):
         elif isinstance(data, models.Model):
             ret = _model(data)
         elif isinstance(data, models.base.ModelState):
-            #ret = _list(force_unicode(data))
             ret = None
         elif isinstance(data, datetime.date):
             ret = time.strftime("%Y/%m/%d",data.timetuple())
@@ -43,7 +42,9 @@ def parse(data):
         ret = {}
         # If we only have a model, we only want to encode the fields.
         for f in data._meta.fields:
-            ret[f.attname] = _any(getattr(data, f.attname))
+            d = _any(getattr(data, f.attname))
+            if d:
+                ret[f.attname] = d 
         # And additionally encode arbitrary properties that had been added.
         fields = dir(data.__class__) + ret.keys()
         add_ons = [k for k in dir(data) if k not in fields]

@@ -18,10 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.template import RequestContext
+from django.contrib.auth import views as auth_views
 
+@login_required
 def index(request):
     if request.is_mobile:
         return render_to_response('mobile/index.html', {"settings": settings}, context_instance=RequestContext(request))    
     return render_to_response('cash/index.html', {"settings": settings}, context_instance=RequestContext(request))
+def login(request, template_name='login.html'):
+    if not request.POST.has_key('remember'):
+        request.session.set_expiry(0)
+    return auth_views.login(request, template_name)

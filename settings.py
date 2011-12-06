@@ -65,11 +65,15 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'cash.loginrequiredmiddleware.LoginRequiredMiddleware',
     'django_mobile.middleware.MobileMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
 
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -120,6 +124,7 @@ INSTALLED_APPS = (
     'cash',
 )
 
+RPC_HOST = 'http://localhost:8081/xmlrpc/'
 if isProd:
     LOG_FILE = '/tmp/pycash-debug.log'
 else:

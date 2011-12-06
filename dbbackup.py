@@ -5,8 +5,9 @@ import tarfile
 import time
 import datetime
 
-sys.path.append("/home/www/python/")
-from pyCash import settings
+PROJECT_PATH = os.path.normpath(os.path.abspath(os.path.dirname(__file__)))
+sys.path.append(PROJECT_PATH)
+import settings
 
 SENDMAIL = "/usr/sbin/sendmail" 
 MYSQLDUMP = "/usr/bin/mysqldump"
@@ -61,7 +62,7 @@ from email import Encoders
 def sendMail(to, subject, text, files=[],server="localhost"):
     assert type(to)==list
     assert type(files)==list
-    fro = "pyCash <sergiogabriel@fibertel.com.ar>"
+    fro = "pyCash <gabriel@titan.sgt>"
 
     msg = MIMEMultipart()
     msg['From'] = fro
@@ -73,7 +74,9 @@ def sendMail(to, subject, text, files=[],server="localhost"):
 
     for file in files:
         part = MIMEBase('application', "octet-stream")
-        part.set_payload( open(file,"rb").read() )
+        fo = open(file,"rb")
+        part.set_payload( fo.read() )
+        fo.close()
         Encoders.encode_base64(part)
         part.add_header('Content-Disposition', 'attachment; filename="%s"'
                        % os.path.basename(file))
@@ -88,3 +91,5 @@ sendMail(
         "PYCASH BACKUP [" + filename + "]","",
         [tarname]
     )
+time.sleep(5)
+os.remove(tarname)

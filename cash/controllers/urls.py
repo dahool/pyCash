@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     (r'^cardDates/',include('cash.controllers.url.cardDates')),
     (r'^cardExpense/',include('cash.controllers.url.cardExpense')),
     (r'^debits/',include('cash.controllers.url.debits')),
+    (r'^sync/',include('cash.controllers.url.sync')),
 )

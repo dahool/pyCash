@@ -10,6 +10,9 @@ class MediaNode(Node):
             
     def render(self, context):
         return self.line
+def mediaurl(path):
+    return "%s%s" % (settings.STATIC_URL, path)
+register.simple_tag(mediaurl)
     
 def loadMedia(parser, token):
     bits = token.contents.split('"')
