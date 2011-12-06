@@ -9,7 +9,8 @@ isProd = os.path.exists(os.path.join(PROJECT_PATH,"prod.key"))
 VERSION = "0.8.3"
 APPLICATION = "pyCash"
 
-JQUERY_VERSION = '1.3.2'
+#JQUERY_VERSION = '1.3.2'
+JQUERY_VERSION = '1.7.1'
 EXT_VERSION = '2.2.1'
 
 DEV = not isProd
