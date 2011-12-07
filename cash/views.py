@@ -28,7 +28,11 @@ def index(request):
     if request.is_mobile:
         return render_to_response('mobile/index.html', {"settings": settings}, context_instance=RequestContext(request))    
     return render_to_response('cash/index.html', {"settings": settings}, context_instance=RequestContext(request))
+
 def login(request, template_name='login.html'):
-    if not request.POST.has_key('remember'):
-        request.session.set_expiry(0)
+    if request.method == 'POST':
+        if not request.POST.get('remember', None):
+            request.session.set_expiry(0)
+    if request.is_mobile:
+        template_name="mobile/login.html"
     return auth_views.login(request, template_name)

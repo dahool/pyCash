@@ -1,0 +1,32 @@
+{% extends "mobile/index.html" %}
+<!DOCTYPE HTML>
+<html>
+<head>{% block header %} {{ block.super }} {% endblock %}
+<body>
+	{% block content %}
+	<div data-role="page">
+		<div data-role="content">
+			<form id="login" method="POST" data-ajax="false">
+				{% csrf_token %}
+				<ul data-role="listview" data-inset="true">
+					<li data-role="list-divider">Login</li>
+					<li>
+					<div data-role="fieldcontain">
+						<label for="username">Username</label> <input type="text"
+							name="username" id="username" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="password">Password</label> <input type="password"
+							name="password" id="password" />
+					</div>
+					</li>
+					<li><input type="submit" value="Login"/></li>
+				</ul>
+			</form>
+		</div>
+		<!-- /content -->
+	</div>
+	<!-- /page -->
+	{% endblock %}
+</body>
+</html>
