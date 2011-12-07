@@ -11,30 +11,34 @@
 	<div data-role="header" data-theme="e">
         <a href="{% url mobile:expenses %}" data-icon="minus" data-theme="b">Cancelar</a>
         <h1>Gastos</h1>
-        <a data-icon="check" data-theme="c" form-submit="#form-add">Guardar</a>
+        <a data-icon="check" data-theme="c" form-submit="#form-add-expense">Guardar</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
-        <form id="form-add" action="{% url expenses_save %}">
+        <form id="form-add-expense" action="{% url expenses_save %}" after-submit-clean="amount,text">
+        	{% if expense %}
+        		<input type="hidden" name="id" value="{{expense.id}}" />
+        	{% endif %}
             <ul data-role="listview" data-inset="true">
+            	<li data-role="list-divider">{% if expense %}Editar{% else %}Nuevo{%endif%}</li>
                 <li>
                 <div data-role="fieldcontain">
                     <label for="date">Fecha:</label>
-                    <input type="date" data-role="datebox" value="{% now "d/m/Y" %}" name="date" id="date" data-options='{"buttonTheme": "b", "disableManualInput": true}' />
+                    <input type="date" data-role="datebox" value="{% if expense %}{{expense.date|date:"d/m/Y"}}{%else%}{% now "d/m/Y" %}{%endif%}" name="date" id="date" data-options='{"buttonTheme": "b", "disableManualInput": true}' />
                 </div>
                 <div data-role="fieldcontain">
                     <label for="amount">Monto:</label>
-                    <input type="number" name="amount" id="amount"/>
+                    <input type="number" name="amount" id="amount" value="{% if expense %}{{expense.amount}}{%endif%}"/>
                 </div>
                 <div data-role="fieldcontain">
                     <label for="text">Descripci&oacute;n:</label>
-                    <input type="text" name="text" maxlength="" id="text"/>
+                    <input type="text" name="text" maxlength="" id="text" value="{% if expense %}{{expense.text}}{%endif%}"/>
                 </div>
                 <div data-role="fieldcontain">
                     <label for="ptype">Tipo de Pago:</label>
                     <select name="paymentType.id" id="ptype" data-overlay-theme="b" data-native-menu="false">
                     {% for ptype in paymentTypeList %}
-                    	<option value="{{ptype.id}}">{{ptype.name}}</option>
+                    	<option value="{{ptype.id}}" {% if expense and expense.paymentType.id == ptype.id %}selected{%endif%}>{{ptype.name}}</option>
                     {% endfor %}
                     </select>                
                 </div>            
@@ -46,7 +50,7 @@
 					{% for category in category_list %}
 						<optgroup label="{{category.grouper}}">
 				        {% for item in category.list %}
-				        <option value="{{item.id}}">{{item.name}}</option>
+				        <option value="{{item.id}}" {% if expense and expense.subCategory.id == item.id %}selected{%endif%}>{{item.name}}</option>
 				        {% endfor %}
 					    </optgroup>
 					{% endfor %}

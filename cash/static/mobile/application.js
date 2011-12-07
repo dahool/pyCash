@@ -30,7 +30,15 @@ function doPostAction(url, data, elem, rte) {
                     'useModal': true,
                     'buttons' : {
                       'OK': {
-                        click: function() {}
+                        click: function() {
+                			if ($(elem).attr('after-submit-clean')) {
+                				var values = $(elem).attr('after-submit-clean').split(",");
+                				$.each(values, function(idx, value) {
+                					$("#"+value).val("");
+                				});
+                				$("#"+values[0]).focus();
+                			}
+                		}
                         }
                     }
                 });

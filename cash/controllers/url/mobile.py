@@ -34,8 +34,12 @@ def index(request):
 def expenses(request):
     return {"settings": settings}
 
-@render('mobile/expenses_add.html')
-def expensesAdd(request):
+@render('mobile/expenses_frm.html')
+def expensesAdd(request, id = None):
+    if id:
+        e = Expense.objects.get(pk=id)
+    else:
+        e = None
     pType = PaymentType.objects.filter()
     pType.order_by("name")
     
@@ -44,7 +48,8 @@ def expensesAdd(request):
         
     return {"settings": settings,
             "paymentTypeList": pType,
-            "categoryList": cList}
+            "categoryList": cList,
+            "expense": e}
 
 @render('mobile/expenses_list.html')
 def expensesList(request):
@@ -90,6 +95,7 @@ def loans_add(request, id):
 urlpatterns = patterns('',
     url(r'^expenses/$', expenses, name='expenses'),
     url(r'^expenses/add/$', expensesAdd, name='expenses_add'),
+    url(r'^expenses/edit/(?P<id>[\d]+)/$', expensesAdd, name='expenses_edit'),
     url(r'^expenses/list/$', expensesList, name='expenses_list'),
     url(r'^loans/$', loansHome, name='loans'),
     url(r'^loans/add/(?P<id>[\d]+)/$', loans_add, name='loans_add'),

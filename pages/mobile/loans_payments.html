@@ -18,7 +18,7 @@
 		<ul data-role="listview">
 			<li data-role="list-divider">Pagos: {{loan.reason}}</li>
 			{% for payment in loan.payment_set.all %}
-			<li swipe-options='{"buttons": [{"style": "r", "value": "Borrar", "href": "javascript:confirmSingleAction(\"{% url payment_delete %}\",\"{{payment.id}}\")"},{"style": "e", "value": "Editar", "href": "algo"}]}'>
+			<li swipe-options='{"buttons": [{"style": "r", "value": "Borrar", "href": "javascript:confirmSingleAction(\"{% url payment_delete %}\",\"{{payment.id}}\")"}]}'>
 				<h3>{{payment.date}}</h3>
 				<span class="ui-li-aside">${{payment.amount|floatformat:2}}</span>
 			</li>

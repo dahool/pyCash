@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 class SettingsAuthBackend:
     
+    supports_anonymous_user = False
+    
     def authenticate(self, username=None, password=None):
         if (username == getattr(settings,'ADMIN_LOGIN','admin') 
             and password ==  getattr(settings,'ADMIN_PWD','admin')):
