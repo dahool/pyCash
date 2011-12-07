@@ -112,7 +112,7 @@ else:
     
 USE_GOOGLE_CAL = True
 
-AUTHENTICATION_BACKENDS = ('pyCash.settings_auth.SettingsAuthBackend',)
+#AUTHENTICATION_BACKENDS = ('pyCash.settings_auth.SettingsAuthBackend',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
