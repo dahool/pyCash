@@ -16,91 +16,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-from common.view.decorators import render
-
 from django.conf.urls.defaults import *
-from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django.conf import settings
-from cash.models import PaymentType, SubCategory, Expense, Person, Loan
-import datetime
-from django.db.models import Sum
-
-@render('mobile/index.html')
-def index(request):
-    return {"settings": settings}    
-
-@render('mobile/expenses.html')
-def expenses(request):
-    return {"settings": settings}
-
-@render('mobile/expenses_frm.html')
-def expensesAdd(request, id = None):
-    if id:
-        e = Expense.objects.get(pk=id)
-    else:
-        e = None
-    pType = PaymentType.objects.filter()
-    pType.order_by("name")
-    
-    cList = SubCategory.objects.filter()
-    cList.order_by("category__name", "name")
-        
-    return {"settings": settings,
-            "paymentTypeList": pType,
-            "categoryList": cList,
-            "expense": e}
-
-@render('mobile/expenses_list.html')
-def expensesList(request):
-    q = Expense.objects.filter()
-    q = q.order_by("-date")
-    liste = q[0:5]
-    return {"settings": settings,
-            "list": liste,
-            "today": datetime.date.today()}
-
-@render('mobile/loans.html')
-def loansHome(request):
-    q = Person.objects.all()
-    q = q.order_by("name")
-    return {"settings": settings,"list": q}
-
-@render('mobile/loans_list.html')
-def loans_list(request, id):
-    p = Person.objects.get(pk=id)
-    llist = p.loans.active()
-    if (llist.count() > 0):
-        total = p.loans.active().aggregate(total=Sum('remain'))['total']
-    else:
-        total = 0
-    return {"settings": settings,"person": p,
-            "list": llist.order_by("date"),"total": total}
-
-@render('mobile/loans_payments.html')
-def loans_payments(request, id):
-    l = Loan.objects.get(pk=id)
-    return {"settings": settings, "loan": l}
-
-@render('mobile/loans_payments_add.html')
-def loans_payments_add(request, id):
-    l = Loan.objects.get(pk=id)
-    return {"settings": settings, "loan": l}
-
-@render('mobile/loans_add.html')
-def loans_add(request, id):
-    p = Person.objects.get(pk=id)
-    return {"settings": settings, "person": p}
-   
+from cash.controllers import MobileController as controller
+  
 urlpatterns = patterns('',
-    url(r'^expenses/$', expenses, name='expenses'),
-    url(r'^expenses/add/$', expensesAdd, name='expenses_add'),
-    url(r'^expenses/edit/(?P<id>[\d]+)/$', expensesAdd, name='expenses_edit'),
-    url(r'^expenses/list/$', expensesList, name='expenses_list'),
-    url(r'^loans/$', loansHome, name='loans'),
-    url(r'^loans/add/(?P<id>[\d]+)/$', loans_add, name='loans_add'),
-    url(r'^loans/list/(?P<id>[\d]+)/$', loans_list, name='loans_list'),
-    url(r'^loans/payments/(?P<id>[\d]+)/$', loans_payments, name='loans_payments'),
-    url(r'^loans/payments/(?P<id>[\d]+)/add/$', loans_payments_add, name='loans_payments_add'),
-    url(r'^$', index, name='home'),
+    url(r'^expenses/$', controller.expenses, name='expenses'),
+    url(r'^expenses/add/$', controller.expensesAdd, name='expenses_add'),
+    url(r'^expenses/edit/(?P<id>[\d]+)/$', controller.expensesAdd, name='expenses_edit'),
+    url(r'^expenses/list/$', controller.expensesList, name='expenses_list'),
+    url(r'^loans/$', controller.loansHome, name='loans'),
+    url(r'^loans/add/(?P<id>[\d]+)/$', controller.loans_add, name='loans_add'),
+    url(r'^loans/list/(?P<id>[\d]+)/$', controller.loans_list, name='loans_list'),
+    url(r'^loans/payments/(?P<id>[\d]+)/$', controller.loans_payments, name='loans_payments'),
+    url(r'^loans/payments/(?P<id>[\d]+)/add/$', controller.loans_payments_add, name='loans_payments_add'),
+    url(r'^$', controller.index, name='home'),
 )

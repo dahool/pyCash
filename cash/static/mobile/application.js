@@ -15,6 +15,11 @@ $(function() {
             return false;
         }); 
     });
+    
+    $(document).bind("mobileinit", function(){
+        $.mobile.loadingMessage = "Cargando...";
+    });
+    
 });
 
 function doPostAction(url, data, elem, rte) {
@@ -22,6 +27,12 @@ function doPostAction(url, data, elem, rte) {
         type: 'POST',
         url: url,
         data: data,
+        beforeSend: function(r,s) {
+            $.mobile.showPageLoadingMsg();
+        },
+        complete: function(r,s) {
+            $.mobile.hidePageLoadingMsg();
+        },
         success: function(data) {
         	if (data.msg) {
                 $(elem).simpledialog({
