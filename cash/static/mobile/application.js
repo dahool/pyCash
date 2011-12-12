@@ -16,7 +16,7 @@ $(function() {
         }); 
     });
     
-    $(document).bind("mobileinit", function(){
+    $(document).on("mobileinit", function(){
         $.mobile.loadingMessage = "Cargando...";
     });
     
@@ -34,30 +34,33 @@ function doPostAction(url, data, elem, rte) {
             $.mobile.hidePageLoadingMsg();
         },
         success: function(data) {
-        	if (data.msg) {
-                $(elem).simpledialog({
-                    'mode' : 'bool',
-                    'prompt' : data.msg,
-                    'useModal': true,
-                    'buttons' : {
-                      'OK': {
-                        click: function() {
-                			if ($(elem).attr('after-submit-clean')) {
-                				var values = $(elem).attr('after-submit-clean').split(",");
-                				$.each(values, function(idx, value) {
-                					$("#"+value).val("");
-                				});
-                				$("#"+values[0]).focus();
-                			}
-                		}
-                        }
-                    }
-                });
-        	}
         	if (data.success) {
             	if (rte) {
             		$.mobile.changePage(rte, {reloadPage: true});
+            	} else {
+        			if ($(elem).attr('after-submit-clean')) {
+        				var values = $(elem).attr('after-submit-clean').split(",");
+        				$.each(values, function(idx, value) {
+        					$("#"+value).val("");
+        				});
+        				$("#"+values[0]).focus();
+        			}
             	}
+        	} else {
+            	if (data.msg) {
+                    $(elem).simpledialog({
+                        'mode' : 'bool',
+                        'prompt' : data.msg,
+                        'useModal': true,
+                        'buttons' : {
+                          'OK': {
+                            click: function() {
+                            	// do nothing
+                    		}
+                            }
+                        }
+                    });
+            	}        		
         	}
         },
         dataType: "json"
