@@ -63,7 +63,7 @@ def update(request):
     p = Payment.objects.get(pk=req['id'])
     if checkPayment(l,req['amount'],p.amount):
         diff = float(p.amount) - float(req['amount'])
-        l.remain = unicode(l.remain + diff)
+        l.remain = unicode(float(l.remain) + diff)
         
         p.amount=req['amount']
         p.date=DateService.invert(req['date'])
