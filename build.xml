@@ -29,6 +29,7 @@
 		<exec executable="/usr/bin/python">
 			<arg value="${dest}/manage.py"/>
 			<arg value="collectstatic"/>
+			<arg value="--noinput"/>
 		</exec>
 		<!--
 		<exec executable="/usr/bin/python">
