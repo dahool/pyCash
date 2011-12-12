@@ -4,27 +4,7 @@
 	<property file="build.properties"/>
 	
 	<target name="main">
-		<!--
-		<echo message="Setting up ${dest}..."/>
-		<delete>
-            <fileset dir="${dest}">
-                <include name="*"/>
-            	<exclude name="settings_local.py"/>
-            </fileset>
-		</delete>
-		-->
-		<!-- delete dir="${dest}"/ -->
 		<echo message="Installing..."/>
-		<!--
-		<copy overwrite="true" verbose="true" todir="${dest}" includeemptydirs="false">
-			<fileset dir=".">
-				<exclude name=".svn"/>
-				<exclude name=".git/**"/>
-				<exclude name="*.pyc"/>
-				<exclude name="settings_local.py"/>
-			</fileset>
-		</copy>
-		-->
         <sync todir="${dest}" includeemptydirs="false" verbose="true" overwrite="true">
             <fileset dir=".">
                 <exclude name=".project"/>
@@ -37,6 +17,7 @@
             <preserveintarget>
                 <include name="settings_local.py"/>
                 <include name="**/media/**"/>
+            	<include name="**/django/**"/>
             </preserveintarget>
         </sync>
 		<touch file="${dest}/${prod.lock.file}"/>	
@@ -45,11 +26,11 @@
             <arg value="-mcompileall"/>
             <arg value="${dest}"/>
         </exec>
-		<!--
 		<exec executable="/usr/bin/python">
 			<arg value="${dest}/manage.py"/>
-			<arg value="cleanup"/>
+			<arg value="collectstatic"/>
 		</exec>
+		<!--
 		<exec executable="/usr/bin/python">
 			<arg value="${dest}/manage.py"/>
 			<arg value="syncdb"/>
@@ -57,7 +38,7 @@
 		</exec>
 		-->
 	    <echo message="Reload"/>
-        <touch file="${dest}/../cgi/pycash.wsgi"/>		
+        <touch file="${dest}/site.wsgi"/>		
 		<echo message="Finished."/>
 	</target>
 

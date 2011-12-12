@@ -8,7 +8,7 @@ isProd = os.path.exists(os.path.join(PROJECT_PATH,"prod.key"))
 
 VERSION = "0.9.0"
 APPLICATION = "Cash Manager"
-MOBILE_VERSION = "1.0"
+MOBILE_VERSION = "1.0.1"
 
 #JQUERY_VERSION = '1.3.2'
 JQUERY_VERSION = '1.7.1'

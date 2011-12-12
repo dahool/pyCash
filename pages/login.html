@@ -4,12 +4,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>-</title>
-{% loadStyle "login-box.css" %}
-{% loadScript "js/jquery/jquery-1.4.1.min.js" %}
+{% loadStyle "login-box2.css" %}
+{% loadScript "js/jquery/jquery-1.7.1.min.js" %}
 <script type="text/javascript">
 $(document).ready(
 	    function() {
-	    	$('#id_password').bind('keypress', function(e) {
+	    	$('#id_password').on('keypress', function(e) {
 	            if(e.keyCode==13){
 	                $(".submit").click();
 	            }
@@ -23,11 +23,11 @@ $(document).ready(
 </script>
 </head>
 <body>
-<div style="padding: 100px 0 0 250px;">
+<!-- div style="padding: 100px 0 0 250px;"-->
 <div id="login-box">
 <form id="login" method="post" accept-charset="utf-8">
 {% csrf_token %}
-<H2>Login</H2>
+<h2>Login</h2>
 <br />
 {{ form.non_field_errors }}
 <br />
@@ -43,6 +43,6 @@ $(document).ready(
 <a href="#" class="submit"><img src="{%mediaurl "images/login-btn.png"%}" width="103" height="42" style="margin-left:90px;" /></a>
 </form>
 </div>
-</div>
+<!-- /div-->
 </body>
 </html>
