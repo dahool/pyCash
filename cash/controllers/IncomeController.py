@@ -71,7 +71,7 @@ def list(request):
     if param_exist("limit",req):
         start = req['start']
         limit = req['limit']
-        list = q[start:limit]
+        list = q[start:start+limit]
     else:
         list = q
     data = '{"total": %s, "rows": %s}' % (Income.objects.count(), JsonParser.parse(list))

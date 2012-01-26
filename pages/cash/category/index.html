@@ -140,8 +140,8 @@
 								   	listeners: {
 								   			select:
 								   				function(combo,record,index) {
-								   					this.pagingBar.pageSize = combo.lastSelectionText;
-								   					this.ds.reload({params:{start:0, limit: this.pagingBar.pageSize}});
+								   					parent.pagingBar.pageSize = combo.lastSelectionText;
+								   					parent.ds.reload({params:{start:0, limit: parent.pagingBar.pageSize}});
 								   				}
 								   		}
 					                }]
@@ -175,7 +175,7 @@
 					        	,{header: _('Name'), width: 50, sortable: true, dataIndex: 'name'}
 					        	
 					        ],
-					        bbar: this.pagingBar,
+					        bbar: parent.pagingBar,
 					        tbar: new Ext.Toolbar({
 								items:[{
 										text: _('Add'),
@@ -400,8 +400,8 @@
 								   	listeners: {
 								   			select:
 								   				function(combo,record,index) {
-								   					this.pagingBar.pageSize = combo.lastSelectionText;
-								   					this.ds.reload({params:{start:0, limit: this.pagingBar.pageSize}});
+								   					parent.pagingBar.pageSize = combo.lastSelectionText;
+								   					parent.ds.reload({params:{start:0, limit: parent.pagingBar.pageSize}});
 								   				}
 								   		}
 					                }]
@@ -447,7 +447,7 @@
 					        	{header: _('Name'), width: 50, sortable: true, dataIndex: 'name'},
 					        	{header: _('Category'), width: 50, sortable: true, dataIndex: 'category'}
 					        ],
-					        bbar: this.pagingBar,
+					        bbar: parent.pagingBar,
 					        tbar: new Ext.Toolbar({
 								items:[{
 										text: _('Add'),
@@ -516,7 +516,7 @@
 	    			},
 					load: function(panel) {
 						panel.addActive(this.grid);
-						this.ds.load({params:{start:0, limit: this.pagingBar.pageSize}});
+						this.ds.load({params:{start:0, limit: parent.pagingBar.pageSize}});
 					},	    			    											
 				});
 								

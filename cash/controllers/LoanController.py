@@ -47,8 +47,7 @@ def list(request):
     if param_exist("limit",req):
         start = int(req['start'])
         limit = int(req['limit'])
-        #list = q[start:limit]
-        list = q
+        list = q[start:start+limit]
     else:
         list = q
         

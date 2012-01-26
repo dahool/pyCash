@@ -161,7 +161,7 @@ def list(request):
     if param_exist("sort",req):
         q = q.order_by(sortMethod(req))
     if param_exist("limit",req):
-        list = q[req['start']:req['limit']]
+        list = q[req['start']:req['start']+req['limit']]
     else:
         list = q
     

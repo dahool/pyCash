@@ -40,7 +40,7 @@ def list(request):
     if param_exist("limit",request.REQUEST):
         start = request.REQUEST['start']
         limit = request.REQUEST['limit']
-        list = q[start:limit]
+        list = q[start:start+limit]
     else:
         list = q
         

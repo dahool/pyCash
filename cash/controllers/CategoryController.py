@@ -28,6 +28,8 @@ from cash.services.RequestUtils import param_exist, sortMethod
 from django.db import IntegrityError
 from cash.decorators import json_response
 
+from django.core.paginator import Paginator
+
 @render('cash/category/index.html')
 def index(request):
     return {}
@@ -41,7 +43,7 @@ def list(request):
     if param_exist("limit",request.REQUEST):
         start = request.REQUEST['start']
         limit = request.REQUEST['limit']
-        lst = q[start:limit]
+        lst = q[start:start+limit]
     else:
         lst = q
     data = '{"total": %s, "rows": %s}' % (Category.objects.count(), JsonParser.parse(lst))
