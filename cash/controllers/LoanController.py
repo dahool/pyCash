@@ -44,6 +44,8 @@ def list(request):
         q = q.filter(person=req['person.id'])    
     if param_exist("sort",req):
         q = q.order_by(sortMethod(req))
+    if not param_exist("all",req):
+        q = q.filter(remain__gt=0)
     if param_exist("limit",req):
         start = int(req['start'])
         limit = int(req['limit'])
@@ -51,33 +53,34 @@ def list(request):
     else:
         list = q
         
-    if param_exist("all",req):
-        showAll = True
-    else:
-        showAll = False
-         
     res = []
     for exp in list:
-        cursor = connection.cursor()
-        cursor.execute("SELECT sum(amount) as sum FROM payment WHERE loan_id = %s", [exp.id])
-        row = cursor.fetchone()
-        sum = exp.amount
-        if row[0]!=None:
-            sum = exp.amount - row[0]
+#        cursor = connection.cursor()
+#        cursor.execute("SELECT sum(amount) as sum FROM payment WHERE loan_id = %s", [exp.id])
+#        row = cursor.fetchone()
+#        sum = exp.amount
+#        if row[0]!=None:
+#            sum = exp.amount - row[0]
         
-        if sum == 0:
+#        if sum == 0:
+#            partial = 0
+#        else:
+#            partial = exp.amount / exp.instalments 
+#        if sum < partial:
+#            partial = sum
+
+        if exp.remain == 0:
             partial = 0
         else:
             partial = exp.amount / exp.instalments 
-        if sum < partial:
-            partial = sum
+        if exp.remain < partial:
+            partial = exp.remain
              
-        if showAll or sum > 0:
-            res.append({'id': exp.id, 'amount': exp.amount, 'date': exp.date,
-                        'reason': exp.reason, 'person': exp.person.name, 'instalments': exp.instalments,
-                        'personId': exp.person.id, 'balance': sum, 'partial': partial})
+        res.append({'id': exp.id, 'amount': exp.amount, 'date': exp.date,
+                    'reason': exp.reason, 'person': exp.person.name, 'instalments': exp.instalments,
+                    'personId': exp.person.id, 'balance': exp.remain, 'partial': partial})
     
-    data = '{"total": %s, "rows": %s}' % (len(res), JsonParser.parse(res[start:limit]))
+    data = '{"total": %s, "rows": %s}' % (list.count(), JsonParser.parse(res))
     return data
 
 @json_response

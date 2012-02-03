@@ -6,7 +6,7 @@ PROJECT_PATH = os.path.normpath(os.path.abspath(os.path.dirname(__file__)))
 
 isProd = os.path.exists(os.path.join(PROJECT_PATH,"prod.key"))
 
-VERSION = "0.9.0"
+VERSION = "0.9.1"
 APPLICATION = "Cash Manager"
 MOBILE_VERSION = "1.0.1"
 
