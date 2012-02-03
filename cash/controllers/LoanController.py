@@ -80,7 +80,7 @@ def list(request):
                     'reason': exp.reason, 'person': exp.person.name, 'instalments': exp.instalments,
                     'personId': exp.person.id, 'balance': exp.remain, 'partial': partial})
     
-    data = '{"total": %s, "rows": %s}' % (list.count(), JsonParser.parse(res))
+    data = '{"total": %s, "rows": %s}' % (q.count(), JsonParser.parse(res))
     return data
 
 @json_response
