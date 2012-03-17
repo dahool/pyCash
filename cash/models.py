@@ -136,7 +136,7 @@ class Payment(models.Model):
     
     class Meta:
         db_table = "payment"
-        ordering = ("date",)
+        ordering = ("-date",)
         
 class Card(models.Model):
     name = models.CharField(max_length=50, unique=True)
