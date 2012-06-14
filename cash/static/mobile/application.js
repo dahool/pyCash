@@ -38,6 +38,10 @@ $(function() {
             return false;
         });
     });     
+    
+    $(document).on("pageshow", function(){
+        $("[field-focus=true]").focus();
+    });
 
 // force certain pages to be refreshed every time. mark such pages with
 // 'data-cache="never"'
@@ -108,7 +112,7 @@ function doPostAction(url, data, elem, rte) {
                         'buttons' : {
                           'OK': {
                             click: function() {
-                            	// do nothing
+                            	$("[field-focus=true]").focus();
                     		}
                             }
                         }
@@ -123,7 +127,7 @@ function doPostAction(url, data, elem, rte) {
 function afterSubmit(elem, rte) {
     if (rte) {
         if (rte == 'back') {
-            history.back();
+            window.history.back();
         } else {
             $.mobile.changePage(rte, {reloadPage: true});
         }
