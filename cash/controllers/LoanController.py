@@ -32,6 +32,9 @@ except:
     import cash.exceptions as _mysql_exceptions
 from cash.decorators import json_response
 
+from django.core import validators
+from django.core.exceptions import ValidationError
+
 @render('cash/loan/index.html')
 def index(request):
     return {}
@@ -55,20 +58,6 @@ def list(request):
         
     res = []
     for exp in list:
-#        cursor = connection.cursor()
-#        cursor.execute("SELECT sum(amount) as sum FROM payment WHERE loan_id = %s", [exp.id])
-#        row = cursor.fetchone()
-#        sum = exp.amount
-#        if row[0]!=None:
-#            sum = exp.amount - row[0]
-        
-#        if sum == 0:
-#            partial = 0
-#        else:
-#            partial = exp.amount / exp.instalments 
-#        if sum < partial:
-#            partial = sum
-
         if exp.remain == 0:
             partial = 0
         else:
@@ -83,27 +72,6 @@ def list(request):
     data = '{"total": %s, "rows": %s}' % (q.count(), JsonParser.parse(res))
     return data
 
-@json_response
-def save(request):
-    req = request.REQUEST
-    p = Person(pk=req['person.id'])
-    l = Loan(person=p,amount=req['amount'],date=DateService.invert(req['date']), reason=req['reason'], remain=req['amount'])
-    
-    if param_exist("instalments",req):
-        l.instalments = req['instalments']
-    else:
-        l.instalments = 1
-            
-    data = '{"success":true}'
-    try:
-        l.save()
-    except _mysql_exceptions.Warning:
-        pass        
-    except Exception, e1:
-        data = '{"success":false, "msg": "%s"}' % (e1.args)  
-    return data
-    
-
 def from_request(request):
     req = request.REQUEST
     p = Person(pk=req['person.id'])
@@ -115,37 +83,43 @@ def from_request(request):
         l.instalments = req['instalments']
     else:
         l.instalments = 1
-    
     return l
-
-@json_response
-def save_or_update(request):
-    l = from_request(request)
-    data = '{"success":true}'
-    try:
-        l.save()
-    except _mysql_exceptions.Warning:
-        pass        
-    except Exception, e1:
-        data = '{"success":false, "msg": "%s"}' % (e1.args)    
-    return data
-
-@json_response
-def update(request):
+        
+def process_request(request):
     req = request.REQUEST
     p = Person(pk=req['person.id'])
-    l = Loan(pk=req['id'],person=p,amount=req['amount'],date=DateService.invert(req['date']), reason=req['reason'])
+
+    number = validators.RegexValidator('^([0-9])+(\.[0-9]{1,2})?$', code=_('Amount'))
+    amount=req['amount']
+    #validate amount
+    number(amount)
+    
+    reason=req['reason']
+    if not reason or reason.strip() == '':
+        raise ValidationError(_('Required'), code=_('Reason'))
+        
+    date=DateService.invert(req['date'])
+    
+    l = Loan(person=p, amount=amount, reason=reason, remain=amount, date=date)
+    if param_exist("id",req):
+        l.pk = req['id']
 
     if param_exist("instalments",req):
         l.instalments = req['instalments']
     else:
         l.instalments = 1
-            
+    return l
+
+@json_response
+def save_or_update(request):
     data = '{"success":true}'
     try:
+        l = process_request(request)
         l.save()
     except _mysql_exceptions.Warning:
         pass        
+    except ValidationError, va1:
+        data = '{"success":false, "msg": "%s: %s"}' % (va1.code, "".join(va1.messages))
     except Exception, e1:
         data = '{"success":false, "msg": "%s"}' % (e1.args)    
     return data

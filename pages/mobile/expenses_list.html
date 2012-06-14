@@ -7,7 +7,7 @@
 {% endblock %}
 <body>
 {% block content %}
-<div data-role="page" id="swipemenu_expenses">
+<div data-role="page" id="swipemenu_expenses" data-cache="never">
 	<div data-role="header" data-theme="e">
         <a href="{% url mobile:expenses %}" data-icon="back" data-theme="b" data-rel="back">Volver</a>
         <h1>Listado</h1>
@@ -31,11 +31,11 @@
             {% endfor %}
         </ul>
 	</div><!-- /content -->
-
+<!--
 	<div data-role="footer" data-theme="c" class="ui-bar"> 
-		<a href="{% url mobile:expenses_list %}" data-icon="refresh" data-theme="a" data-cache="false">Actualizar</a> 
+		<a href="#" data-icon="refresh" data-theme="a" data-cache="false">Actualizar</a> 
 	</div> 
-	
+-->	
 </div><!-- /page -->
 {% endblock %}
 </body>

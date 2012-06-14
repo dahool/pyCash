@@ -87,3 +87,4 @@ def loans_payments_add(request, id):
 def loans_add(request, id):
     p = Person.objects.get(pk=id)
     return {"settings": settings, "person": p}
+    

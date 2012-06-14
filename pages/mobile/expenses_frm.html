@@ -12,7 +12,11 @@
 	<div data-role="header" data-theme="e">
         <a href="{% url mobile:expenses %}" data-icon="minus" data-theme="b" data-rel="back">Cancelar</a>
         <h1>Gastos</h1>
-        <a data-icon="check" data-theme="c" form-submit="#form-add-expense">Guardar</a>
+        {% if expense %}
+            <a data-icon="check" data-theme="c" form-submit="#form-add-expense" return="back">Guardar</a>
+        {% else %}
+            <a data-icon="check" data-theme="c" form-submit="#form-add-expense">Guardar</a>
+        {% endif %}
 	</div><!-- /header -->
 
 	<div data-role="content">

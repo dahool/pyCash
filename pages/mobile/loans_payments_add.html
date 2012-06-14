@@ -11,7 +11,7 @@
 	<div data-role="header" data-theme="e">
         <a href="{% url mobile:loans_list loan.person.id %}" data-icon="back" data-theme="b" data-rel="back">Cancelar</a>
         <h1>Pago {{loan.reason}} [{{loan.person.name}}]</h1>
-        <a data-icon="check" data-theme="c" form-submit="#form-add" return="{% url mobile:loans_payments loan.id %}">Guardar</a>
+        <a data-icon="check" data-theme="c" form-submit="#form-add" return="back">Guardar</a>
 	</div><!-- /header -->
 
 	<div data-role="content">	

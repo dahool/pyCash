@@ -15,6 +15,9 @@ except:
 from django.utils import simplejson as json
 from cash.decorators import json_response
 
+from django.core import validators
+from django.core.exceptions import ValidationError
+
 @json_response
 def list(request):
     req = request.REQUEST
@@ -32,6 +35,50 @@ def list(request):
     data = '{"total": %s, "rows": %s}' % (Payment.objects.count(), JsonParser.parse(list))
     return data
     
+@json_response
+def save_or_update(request):
+    data = '{"success":true}'
+    req = request.REQUEST
+    number = validators.RegexValidator('^([0-9])+(\.[0-9]{1,2})?$', code=_('Amount'))
+    amount=req['amount']
+    try:
+        number(amount)
+    except ValidationError, va1:
+        return '{"success":false, "msg": "%s: %s"}' % (va1.code, "".join(va1.messages))
+
+    l = Loan.objects.get(pk=req['loan.id'])
+    if param_exist("id",req):
+        p = Payment.objects.get(pk=req['id'])    
+        prevAmount = p.amount
+        
+    else:
+        p = Payment(loan=l)
+        prevAmount = None
+    
+    if checkPayment(l,amount,prevAmount):
+        if prevAmount:
+            diff = float(prevAmount) - float(amount)
+            l.remain = unicode(float(l.remain) + diff)
+        else:
+            l.remain = unicode(float(l.remain) - float(amount))
+
+        p.amount=amount
+        p.date=DateService.invert(req['date'])
+        
+        try:
+            l.save()
+        except _mysql_exceptions.Warning:
+            pass        
+        try:
+            p.save()
+        except _mysql_exceptions.Warning:
+            pass        
+        except Exception, e1:
+            data = '{"success":false, "msg": "%s"}' % (e1.args)
+    else:
+        data = '{"success":false, "msg": "%s"}' % (_('The entered amount is greater than the amount owned'))
+    return data
+        
 @json_response
 def save(request):
     req = request.REQUEST

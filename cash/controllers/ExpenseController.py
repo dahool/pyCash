@@ -30,7 +30,9 @@ try:
 except:
     import cash.exceptions as _mysql_exceptions
 from cash.decorators import json_response
-from cash.exceptions import ValidationError
+
+from django.core import validators
+from django.core.exceptions import ValidationError
 
 @render('cash/expense/index.html')
 def index(request):
@@ -172,9 +174,14 @@ def list(request):
 def fromParams(req):
     if not req['date']:
         raise ValidationError(_('Enter a valid date'))
-    if not req['amount'] or float(req['amount']) == 0.0:
-        raise ValidationError(_('Enter a valid amount'))
         
+    amount = req['amount']
+    number = validators.RegexValidator('^([0-9])+(\.[0-9]{1,2})?$', message=_('Enter a valid amount'))
+    number(amount)
+    
+    if not amount or float(amount) == 0.0:
+        raise ValidationError(_('Enter a valid amount'))
+
     try:
         s = SubCategory.objects.get(pk=req['subCategory.id'])
     except SubCategory.DoesNotExist:
@@ -196,7 +203,7 @@ def fromParams(req):
         
     e.text=text
     e.date=DateService.invert(req['date']) 
-    e.amount=req['amount']
+    e.amount=amount
     e.subCategory=s
     e.paymentType=p
     return e
@@ -207,7 +214,7 @@ def save_or_update(request):
     try:
         e = fromParams(req)
     except ValidationError, e:
-        data = '{"success":false, "msg": "%s"}' % (e)
+        data = '{"success":false, "msg": "%s"}' % ("".join(e.messages))
         return data
         
     if e.id:

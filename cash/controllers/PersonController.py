@@ -63,13 +63,15 @@ def list(request):
 @json_response
 def save(request):
     req = request.REQUEST
-    p = Person(name=req['name'])
-    
-    data = '{"success":true}'
+    name=req['name']
+    if not name or name.strip() == '':
+        return '{"success":false, "msg": "%s"}' % _("Name is required.")  
+    p = Person(name=name)
+    data = '{"success":true, "msg": "%s"}' % (_("Saved '%s'.") % (name))
     try:
         p.save()
     except IntegrityError:
-        data = '{"success":false, "msg": "%s"}' % (_("Person '%s' already exists.") % (req['name']))
+        data = '{"success":false, "msg": "%s"}' % (_("Person '%s' already exists.") % (name))
     except _mysql_exceptions.Warning:
         pass        
     except Exception, e1:
