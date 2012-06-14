@@ -176,7 +176,7 @@ def fromParams(req):
         raise ValidationError(_('Enter a valid date'))
         
     amount = req['amount']
-    number = validators.RegexValidator('^([0-9])+(\.[0-9]{1,2})?$', message=_('Enter a valid amount'))
+    number = validators.RegexValidator('^-?([0-9])+(\.[0-9]{1,2})?$', message=_('Enter a valid amount'))
     number(amount)
     
     if not amount or float(amount) == 0.0:
