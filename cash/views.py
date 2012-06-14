@@ -26,9 +26,13 @@ from django.contrib.auth import views as auth_views
 @login_required
 def index(request):
     if request.is_mobile:
-        return render_to_response('mobile/index.html', {"settings": settings}, context_instance=RequestContext(request))    
+        return mobile(request)
     return render_to_response('cash/index.html', {"settings": settings}, context_instance=RequestContext(request))
 
+@login_required
+def mobile(request):
+    return render_to_response('mobile/index.html', {"settings": settings}, context_instance=RequestContext(request))
+    
 def login(request, template_name='login.html'):
     if request.method == 'POST':
         if not request.POST.get('remember', None):

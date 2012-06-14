@@ -9,7 +9,7 @@
 {% block content %}
 <div data-role="page">
 	<div data-role="header" data-theme="e">
-        <a href="{% url mobile:loans %}" data-icon="back" data-theme="b">Volver</a>
+        <a href="{% url mobile:loans %}" data-icon="back" data-theme="b" data-rel="back">Volver</a>
         <h1>Préstamos</h1>
         <a href="{% url mobile:loans_add person.id %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Préstamo</a>
 	</div><!-- /header -->

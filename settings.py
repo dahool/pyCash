@@ -8,9 +8,9 @@ isProd = os.path.exists(os.path.join(PROJECT_PATH,"prod.key"))
 
 VERSION = "0.9.1"
 APPLICATION = "Cash Manager"
-MOBILE_VERSION = "1.0.1"
+MOBILE_VERSION = "1.1.0"
 
-#JQUERY_VERSION = '1.3.2'
+###### libraries
 JQUERY_VERSION = '1.7.1'
 EXT_VERSION = '2.2.1'
 
@@ -28,11 +28,11 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'NAME': 'exp',
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'exp',
-        'PASSWORD': 'exp',
-        'HOST': '166.40.231.124',
+        'NAME': os.path.join(PROJECT_PATH,"expenses.db"),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
     },
 }
 
@@ -54,7 +54,13 @@ SITE_ID = 1
 USE_I18N = True
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '5894g(v(td&*gb^0vd11r&#2$1i^2^yz#-zka^)@&tq^))_p0c'
+SECRET_KEY = '[[SECRET_KEY]]'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -129,23 +135,6 @@ if isProd:
     LOG_FILE = '/tmp/pycash-debug.log'
 else:
     LOG_FILE = '/tmp/pycash-debug-dev.log'
-
-#if isProd:
-#    MEDIA_URL = 'http://py.banshee.sgt/media/'    
-#    LOG_FILE = '/tmp/pycash-debug.log'
-#else:
-#    if os.name == "posix":
-#        pass
-#    else:
-#        try:
-#            os.environ['https_proxy']
-#            os.environ['http_proxy']
-#        except:
-#            pass
-#
-#    LOG_FILE = '/tmp/pycash-debug-dev.log'
-#    MEDIA_ROOT = os.path.join(PROJECT_PATH,'pages','media')
-#    MEDIA_URL = 'http://localhost:8000/cash/media/'
     
 try:
     execfile(os.path.join(PROJECT_PATH,'settings_local.py'))

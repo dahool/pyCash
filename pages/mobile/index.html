@@ -6,17 +6,17 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link media="screen" href="{{ STATIC_URL }}mobile/jquery.mobile-1.0.min.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
 <link media="screen" href="{{ STATIC_URL }}mobile/mobile.extra.css" type="text/css" rel="stylesheet" />
 <link media="screen" href="{{ STATIC_URL }}mobile/jquery.mobile.datebox.min.css" type="text/css" rel="stylesheet" />
 <link media="screen" href="{{ STATIC_URL }}mobile/jquery.mobile.simpledialog.min.css" type="text/css" rel="stylesheet" />
 <link media="screen" href="{{ STATIC_URL }}mobile/swipe.css" type="text/css" rel="stylesheet" />
 <link media="screen" href="{{ STATIC_URL }}mobile/default.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}mobile/functions.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}mobile/swipe.list.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}mobile/application.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}mobile/jquery.mobile-1.0.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}mobile/jquery.mobile.datebox.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}mobile/jquery.mobile.datebox.i8n.es.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}mobile/jquery.mobile.simpledialog.min.js"></script>
@@ -31,15 +31,15 @@
 		<a href="{% url auth_logout %}" data-icon="delete" data-iconpos="notext" class="ui-btn-right" data-ajax="false">Logout</a>
 	</div><!-- /header -->
 
-	<div data-role="content">	
-		<ul data-role="listview" data-inset="true" >
-			<li>
-                <a href="#expenses">Gastos</a> 
-			</li>
-			<li>
-				<a href="{% url mobile:loans %}">Préstamos</a> 
-			</li>
-		</ul>
+	<div data-role="content" id="main_nav">	
+        <div class="ui-grid-b">
+            <a href="#expenses" class="menu-element expense" data-role="button" data-inline="true">
+                Gastos
+            </a>
+            <a href="{% url mobile:loans %}" class="menu-element loan" data-role="button" data-inline="true">
+                Préstamos
+            </a>            
+        </div>
 	</div><!-- /content -->
 
 </div><!-- /page -->
@@ -50,16 +50,16 @@
         <h1>Gastos</h1>
 	</div><!-- /header -->
 
-	<div data-role="content">	
-		<ul data-role="listview" data-inset="true" >
-			<li data-role="list-divider">Gastos</li>
-			<li>
-                <a href="{% url mobile:expenses_add %}">Nuevo</a>
-			</li>
-			<li>
-				<a href="{% url mobile:expenses_list %}">Listado</a>
-			</li>
-		</ul>
+	<div data-role="content" id="main_nav">
+        <div class="ui-grid-b">
+            <a href="{% url mobile:expenses_add %}" class="menu-element additem" data-role="button" data-inline="true">
+                Nuevo
+            </a>
+            <a href="{% url mobile:expenses_list %}" class="menu-element listitem" data-role="button" data-inline="true">
+                Listado
+            </a>            
+        </div>
+        
 	</div><!-- /content -->
 </div><!-- /page -->
 

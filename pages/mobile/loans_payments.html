@@ -9,7 +9,7 @@
 {% block content %}
 <div data-role="page" id="swipemenu_payments">
 	<div data-role="header" data-theme="b">
-        <a href="{% url mobile:loans_list loan.person.id %}" data-icon="back" data-theme="b">Volver</a>
+        <a href="{% url mobile:loans_list loan.person.id %}" data-icon="back" data-theme="b" data-rel="back">Volver</a>
         <h1>{{loan.person.name}}</h1>
         <a href="{% url mobile:loans_payments_add loan.id %}" data-icon="add" data-iconpos="notext" data-theme="f">Nuevo Pago</a>
 	</div><!-- /header -->

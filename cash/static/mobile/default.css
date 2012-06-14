@@ -4,3 +4,42 @@
 label.ui-input-text, label.ui-select {
 	font-weight: bold !important;
 }
+#main_nav {
+    text-align: center;
+}
+#main_nav a {
+    float: none !important;
+}
+#main-menu {
+    width: 190px !important;
+    margin-right: auto;
+    margin-left: auto;
+}
+.menu-element {
+    background: url(images/images.png) no-repeat top left;
+    border: 0 none;
+    border-radius: 0 0 0 0;
+    box-shadow: none;
+    width: 80px;
+    height: 100px;
+}
+.menu-element .ui-btn-inner {
+    padding-top: 85px;
+    overflow: visible;
+    font-size: 12px;
+    text-shadow: none;    
+}
+.menu-element.expense {
+    background-position: 0px 0px;
+    text-indent: -2px;
+}
+.menu-element.loan {
+    background-position: 0px -100px;
+    text-indent: -12px;
+}
+.menu-element.additem {
+    background-position: 0px -200px;
+}
+.menu-element.listitem {
+    background-position: 0px -300px;
+}

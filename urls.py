@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', 'cash.views.login', name='user_signin'),
     url(r'^logout/$', auth_views.logout, {'next_page': settings.LOGOUT_REDIRECT_URL }, name='auth_logout'),
+    url(r'^mobile/$','cash.views.mobile'),
     url(r'^$','cash.views.index'),
     url(r'',include('cash.controllers.urls')),
 )
