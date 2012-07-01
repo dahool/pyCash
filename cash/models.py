@@ -1,12 +1,31 @@
 from django.db import models
+from django.contrib.auth.models import User
 from cash.services.ModelUtils import capFirst
 
+class AuthToken(models.Model):
+    token = models.CharField(max_length=128, primary_key=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    user = models.ForeignKey(User)
+    
+    class Meta:
+        ordering = ['created']
+        get_latest_by = "created"
+            
+class TokenUsage(models.Model):
+    token = models.ForeignKey(AuthToken)
+    ip = models.CharField(max_length=15, db_index=True)
+    access = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        get_latest_by = "access"
+        
 class Income(models.Model):
     period = models.DateField(db_index=True)
     amount = models.DecimalField(max_digits=19, decimal_places=2)
     
     def __unicode__(self):
         return self.period  
+
     class Meta:
         db_table = "income"
             

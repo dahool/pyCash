@@ -20,7 +20,15 @@ var systemMenu = new Ext.menu.Menu({
 		handler : function() {
 			loadPage('card','card-panel');
 		}
-	},{
+	},
+	{
+		text : _('Authentication Token'),
+		iconCls : 'menu-item',
+		handler : function() {
+			loadPage('token','token-grid');
+		}
+	},    
+    {
 		text: _('Syncronize'),
 		iconCls: 'menu-sync',
 		menu: {

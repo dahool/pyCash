@@ -1,0 +1,30 @@
+{% load media_load %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        {% loadExtUx "JsonGroupStore" %}
+        {% loadScript "js/app/token.js" %}
+	    <script type="text/javascript">
+	    
+			var tokenModule = new Local.Token();
+			tokenModule.init();
+
+		    var tokenPanel = new Ext.Panel({
+		    	id: 'token-panel',
+				title: _('Token'),
+				iconCls : 'menu-item',
+				layout:'border',
+				defaults: {
+				    split: true,
+				},
+				items: [tokenModule.grid]
+		    });
+			    
+			mainTabPanel.addActive(tokenPanel);
+			tokenModule.load();
+		
+	    </script>
+	</head>
+    <body>
+    </body>	
+</html>

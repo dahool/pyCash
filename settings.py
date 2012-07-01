@@ -71,6 +71,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'cash.auth.middleware.RemoteTokenMiddleware',
 	'cash.loginrequiredmiddleware.LoginRequiredMiddleware',
     'django_mobile.middleware.MobileMiddleware',
 )
@@ -78,6 +79,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 LOGIN_URL = '/login'
+LOGIN_EXEMPT_URLS = '/token'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
