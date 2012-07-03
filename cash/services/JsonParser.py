@@ -32,6 +32,8 @@ def parse(data):
             ret = _model(data)
         elif isinstance(data, models.base.ModelState):
             ret = None
+        elif isinstance(data, datetime.datetime):
+            ret = data.strftime("%Y/%m/%d %H:%M:%S")            
         elif isinstance(data, datetime.date):
             ret = time.strftime("%Y/%m/%d",data.timetuple())
         else:

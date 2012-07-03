@@ -120,7 +120,8 @@ else:
     
 USE_GOOGLE_CAL = True
 
-#AUTHENTICATION_BACKENDS = ('pyCash.settings_auth.SettingsAuthBackend',)
+AUTHENTICATION_BACKENDS = ('cash.auth.backends.RemoteTokenBackend',
+                           'django.contrib.auth.backends.ModelBackend',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',

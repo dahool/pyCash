@@ -100,7 +100,7 @@ Ext.extend(Local.Token, Ext.util.Observable, {
 			title: _('Token Usage History'),
 	        columns: [
                 {header: _('IP'), width: 50, sortable: true, dataIndex: 'ip'},
-	        	{header: _('Last Access'), width: 50, sortable: true, dataIndex: 'date', renderer: Ext.util.Format.dateRenderer('d/m/Y H:M:S')}
+	        	{header: _('Last Access'), width: 50, sortable: true, dataIndex: 'date', renderer: Ext.util.Format.dateRenderer('d/m/Y H:i:s')}
 	        ],
 	        bbar: this.pagingBar,
 	        tbar: new Ext.Toolbar({

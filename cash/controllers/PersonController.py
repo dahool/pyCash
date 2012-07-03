@@ -57,7 +57,11 @@ def list(request):
         list = q[start:start+limit]
     else:
         list = q
-    data = '{"total": %s, "rows": %s}' % (Person.objects.count(), JsonParser.parse(list))
+        
+    res = []
+    for l in list:
+        res.append({'name': l.name, 'count': l.loans.active().count()})
+    data = '{"total": %s, "rows": %s}' % (Person.objects.count(), JsonParser.parse(res))
     return data
 
 @json_response

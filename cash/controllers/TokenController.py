@@ -106,7 +106,7 @@ def create(request):
         
         # create new token
         obj = AuthToken.objects.create(user=request.user, token=hash)
-        data = '{"success":true, "response": "%s"}' % obj.created
+        data = '{"success":true, "response": "%s"}' % obj.created.strftime('%d-%m-%Y %H:%M')
     except IntegrityError:
         data = '{"success":false, "msg": "%s"}' % (_("Token already exists."))
     except _mysql_exceptions.Warning:
