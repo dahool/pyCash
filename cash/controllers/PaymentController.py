@@ -132,13 +132,18 @@ def update(request):
                         
     return data
 
-def checkPayment(loan, amount, oldAmount):
+def getPaymentRemain(loan):
     cursor = connection.cursor()
-    cursor.execute("SELECT sum(amount) as sum FROM payment WHERE loan_id = %s", [loan.id])
+    cursor.execute("SELECT sum(amount) as sum FROM payment WHERE loan_id = %s", [loan.pk])
     row = cursor.fetchone()
     resto = float(loan.amount)
     if row[0]!=None:
         resto -= float(row[0])
+    return resto
+    
+def checkPayment(loan, amount, oldAmount):
+    
+    resto = getPaymentRemain(loan)
     
     if oldAmount!=None: 
         resto += float(oldAmount)

@@ -35,6 +35,8 @@ from cash.decorators import json_response
 from django.core import validators
 from django.core.exceptions import ValidationError
 
+from cash.controllers.PaymentController import getPaymentRemain
+
 @render('cash/loan/index.html')
 def index(request):
     return {}
@@ -103,7 +105,8 @@ def process_request(request):
     l = Loan(person=p, amount=amount, reason=reason, remain=amount, date=date)
     if param_exist("id",req):
         l.pk = req['id']
-
+        l.remain = getPaymentRemain(l)
+        
     if param_exist("instalments",req):
         l.instalments = req['instalments']
     else:
