@@ -105,7 +105,7 @@ def process_request(request):
     l = Loan(person=p, amount=amount, reason=reason, remain=amount, date=date)
     if param_exist("id",req):
         l.pk = req['id']
-        l.remain = "%.2g" % getPaymentRemain(l)
+        l.remain = "%.2f" % getPaymentRemain(l)
         
     if param_exist("instalments",req):
         l.instalments = req['instalments']
